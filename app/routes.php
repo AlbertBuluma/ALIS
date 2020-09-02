@@ -1274,6 +1274,9 @@ Route::group(array("before" => "auth"), function()
 // Fetch ID of most recent record from tables
 Route::get('/latest_record_ids', 'ApiController@fetchAllTableIDs');
 
+// Receive IDs of most recent records from tables in warehouse
+Route::post('warehouse_ids', 'ApiController@warehouseIds');
+
 // Fetch latest 10 records from table
 Route::get('/tables/{table}', 'ApiController@fetchTableRecords');
 

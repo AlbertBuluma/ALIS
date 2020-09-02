@@ -1270,8 +1270,10 @@ Route::group(array("before" => "auth"), function()
 
 });
 
-Route::get('/lai', function(){
-//    $result = ApiController::RunCurlPostServices('account/authenticate', ["username: laiton", "password: password"]);
-    $result = ApiController::RunCurlPostServices(json_encode(['username' => 'laiton', 'password' => 'password']));
-    return $result;
+
+// Fetch ID of most recent record from tables
+Route::get('/latest_record_ids', function(){
+    return ApiController::fetchAllTableIDs();
 });
+
+

@@ -1272,10 +1272,7 @@ Route::group(array("before" => "auth"), function()
 
 
 // Fetch ID of most recent record from tables
-Route::get('/latest_record_ids', function(){
-    return ApiController::fetchAllTableIDs();
-});
-
+Route::get('/latest_record_ids', 'ApiController@fetchAllTableIDs');
 
 // Fetch latest 10 records from table
 Route::get('/tables/{table}', 'ApiController@fetchTableRecords');

@@ -21,7 +21,7 @@
                    
                     <div class="col-md-12">
                         {{ $visit->patient->name.' ('.($visit->patient->getGender(true)).',
-                            '.$visit->patient->getAge('Y'). ')'}}
+                            '.$visit->getAge('Y'). ')'}}
 
 
                         |
@@ -76,7 +76,7 @@
                             }}</td> -->
                         <!--Visit Number -->
                         <td>{{ $test->visit->patient->name.' ('.($test->visit->patient->getGender(true)).',
-                            '.$test->visit->patient->getAge('Y'). ')'}}</td> <!--Patient Name -->
+                            '.$test->visit->getAge('Y'). ')'}}</td> <!--Patient Name -->
                         <td>{{ $test->getSpecimenId() }}</td> <!--Specimen ID -->
                         <td>{{ $test->testType->name }}</td> <!--Test-->
                         <td>{{ $test->visit->visit_type }}</td> <!--Visit Type -->

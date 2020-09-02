@@ -297,6 +297,10 @@
 									<span class="glyphicon glyphicon-tag"></span>{{ trans('messages.interfaced-equipment')}}</a>
 								</li>
 								<li>
+									<a href="{{ URL::route("testnamemapping.index") }}">
+									<span class="glyphicon glyphicon-tag"></span>Test name Mapping</a>
+								</li>
+								<li>
 									<a href="{{ URL::route("resetulin.create") }}">
 									<span class="glyphicon glyphicon-tag"></span>{{'Reset ULIN' }}</a>
 								</li>

@@ -109,7 +109,11 @@ return array(
 		'Zizaco\Entrust\EntrustServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Maatwebsite\Excel\ExcelServiceProvider',
-		'LaravelQRCode\Providers\QRCodeServiceProvider',
+		'Milon\Barcode\BarcodeServiceProvider',
+		// 'Dinesh\Barcode\BarcodeServiceProvider',
+		// 'Barryvdh\Snappy\ServiceProvider',
+		'SimpleSoftwareIO\QrCode\QrCodeServiceProvider',
+		//'LaravelQRCode\Providers\QRCodeServiceProvider',
 	),
 
 	/*
@@ -179,7 +183,10 @@ return array(
 		'SoftDeletingTrait'     => 'Illuminate\Database\Eloquent\SoftDeletingTrait',
 		'Entrust'         => 'Zizaco\Entrust\EntrustFacade',
 		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
-		'QRCode' => 'LaravelQRCode\Facades\QRCode',
+		'DNS1D' => 'Milon\Barcode\Facades\DNS1DFacade',
+        'DNS2D' => 'Milon\Barcode\Facades\DNS2DFacade',
+        'QrCode' => 'SimpleSoftwareIO\QrCode\Facades\QrCode',
+		//'QRCode' => 'LaravelQRCode\Facades\QRCode',
 	),
 
 );

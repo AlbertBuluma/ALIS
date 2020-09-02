@@ -52,11 +52,13 @@ class PocController extends \BaseController {
 		// ->lists('name','id');
 		// $district = District::orderBy('name','ASC')
 		// ->lists('name', 'id');
+		$ulinFormat = AdhocConfig::where('name','ULIN')->first()->getULINFormat();
 
 		return View::make('poc.create')
 		->with('hiv_status', $hiv_status)
 		// ->with('facility',$facility)
 		// ->with('district',$district)
+		->with('ulinFormat', $ulinFormat)
 			->with('antenatal', $antenatal);
 	}
 
@@ -106,7 +108,7 @@ class PocController extends \BaseController {
 			$patient->pmtct_antenatal	= Input::get('pmtct_antenatal');
 			$patient->pmtct_delivery	= Input::get('pmtct_delivery');
 			$patient->pmtct_postnatal	= Input::get('pmtct_postnatal');
-			$patient->sample_id	= Input::get('sample_id');
+			$patient->sample_id	= '2020';
 			$patient->other_entry_point	= Input::get('other_entry_point');
 			// $patient->facility	= Input::get('facility');
 			// $patient->district	= Input::get('district');
@@ -115,6 +117,12 @@ class PocController extends \BaseController {
 
 			try{
 				$patient->save();
+				
+				$patient->ulin = $patient->sample_id = $patient->getUlin();
+				// $patient->sample_id	= $patient->getUlin();
+				$patient->save();
+				$uuid = new UuidGenerator; 
+				$uuid->save();
 
 				return Redirect::route('poc.index')
 				->with('message', 'Successfully saved patient information:!');

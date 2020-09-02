@@ -10,6 +10,18 @@
 |
 */
 /* Routes accessible before logging in */
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+
+Route::get('changepassword', function() {
+   $user = APP\User::where('username', 'administrator')->first();
+   $user->password = Hash::make('123456');
+   $user->save();
+
+   echo 'Password changed successfully.';
+});
+
 Route::group(array("before" => "guest"), function()
 {
     /*
@@ -40,12 +52,42 @@ Route::group(array("before" => "guest"), function()
         "uses" => "InterfacerController@getTestRequestsForInstrument"
     ));
 
+//    Route::get('/api/warehouse', function (){
+//        $api = new ApiController();
+//        return $api->facility();
+//    });
+
     Route::any('/', array(
         "as" => "user.login",
         "uses" => "UserController@loginAction"
     ));
 
 });
+
+Route::get('/api/warehouse', function (){
+    $api = new ApiController();
+    return $api->facility();
+});
+
+Route::get('/fp', function(){
+
+        $starttime = microtime(true);
+//        $file      = fsockopen ("www.cphl.go.ug", 80, $errno, $errstr, 10);
+        $file      = fsockopen ("216.104.201.69", 80, $errno, $errstr, 10);
+//        $file      = fsockopen ("https://587edf74ecfa.ngrok.io/api/warehouse", 80, $errno, $errstr, 30);
+        $stoptime  = microtime(true);
+        $status    = 0;
+
+        if (!$file) $status = -1;  // Site is down
+        else {
+            fclose($file);
+            $status = ($stoptime - $starttime) * 1000;
+            $status = floor($status). 'ms';
+        }
+        return $status;
+
+});
+
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
 {
@@ -231,7 +273,7 @@ Route::group(array("before" => "auth"), function()
         "as"   => "visit.technologistpostaddtest",
         "uses" => "VisitController@technologistPostAddTest"
     ));
-
+    Route::get('barcode/barcode', 'BarcodeController@barcode');
 
     //Unhls patiend routes end
 
@@ -435,6 +477,11 @@ Route::group(array("before" => "auth"), function()
         "before" => "checkPerms:edit_test_results",
         "as"   => "unhls_test.saveResults",
         "uses" => "UnhlsTestController@saveResults"
+    ));
+    Route::post("/unhls_test/{test}/saverevisedresults", array(
+        "before" => "checkPerms:edit_test_results",
+        "as"   => "unhls_test.saveRevisedResults",
+        "uses" => "UnhlsTestController@saveRevisedResults"
     ));
     Route::get("/test/{test}/viewdetails", array(
         "as"   => "test.viewDetails",
@@ -721,6 +768,22 @@ Route::group(array("before" => "auth"), function()
         Route::post("/microbiology/download", array(
             "as"   => "reports.microbiology.download",
             "uses" => "ReportController@downloadMicrobiology"
+        ));
+        Route::any("/equipment_register", array(
+            "as"   => "reports.registers.equipment_maintenance",
+            "uses" => "ReportController@equipment_maintenance_register"
+        ));
+        Route::any("/bb_register", array(
+            "as"   => "reports.registers.biosafety_biosecurity",
+            "uses" => "ReportController@bb_register"
+        ));
+        Route::any("/quaterlyreport", array(
+            "as"   => "reports.quaterlyreport",
+            "uses" => "ReportController@quaterly_report"
+        ));
+        Route::any("/vl_tb_register", array(
+            "as"   => "reports.registers.vl_tb_register",
+            "uses" => "ReportController@vl_tb_register"
         ));
     });
     Route::group(array("before" => "checkPerms:manage_qc"), function()
@@ -1135,4 +1198,80 @@ Route::group(array("before" => "auth"), function()
         "uses" => "StockRequisitionController@fetch"
     ));
 
+    Route::get('/db', function(){
+//        "The select method will always return an array of results."
+//        $results = DB::select('select * from drugs where id=?', [1]);
+//        DB::statement('select * from drugs');   // Runs a general statement
+
+//        Retrieving A Single Column From A Row
+//        $results = DB::table('drugs')->where('name', 'Colistin')->pluck('id');
+
+//        Retrieving A List Of Column Values
+//        $results = DB::table('drugs')->lists('name');
+//        $results = DB::table('drugs')->lists('name', "created_at");
+
+//        Specifying A Select Clause
+//            $results = DB::table('drugs')->select('id as drug_id', 'name as drug_name')->get();
+
+//        Using Where Between
+//        $results = DB::table('drugs')
+//            ->select('id', 'name')
+//            ->whereBetween('id', [12,24])
+//            ->get();
+
+//        Using Where In With An Array
+//        $results = DB::table('drugs')
+//            ->select('id','name')
+//            ->whereIn('id', [12,16,17])
+//            ->get();
+
+//        Order By, Group By, And Having
+//        $results = DB::table('drugs')
+//                ->orderBy('name', 'desc')
+//                ->groupBy('name')
+//                ->having('id', '>=', '12')
+//                ->get();
+
+//        JOINS
+//        $results = DB::table('lots')
+//                    ->join('instruments', 'lots.instrument_id', '=', 'instruments.id')
+//                    ->join('controls', 'lots.id', '=', 'controls.lot_id')
+//                    ->select('lots.number', 'controls.description')
+//                    ->get();
+
+//        $results = DB::table('unhls_tests')
+//                    ->leftJoin('unhls_test_results', function ($join){
+//                        $join->on('unhls_tests.id', '=', 'unhls_test_results.test_id')
+//                            ->where('unhls_tests.id', '=', 6);
+//                    })
+//                    ->select('unhls_tests.purpose')
+//                    ->get();
+
+//        $results = DB::table('unhls_test_results')
+////                    ->whereIn('measure_id', [38,39,40,41,42])
+//                    ->orWhere(function($query){
+//                        $query->where('test_id', 2)
+//                            ->where('result', 4.42);
+//                    })
+//                    ->get();
+//
+//        dd($results);
+//        $tables = DB::statement('show tables');
+        $tab = $data = [];
+        $tables = DB::select('show tables');
+        foreach($tables as $table){
+            $tab[] = $table->Tables_in_alis;
+        }
+        foreach ($tab as $tab_data){
+            $data[$tab_data] = DB::table($tab_data)->limit(5)->get();
+        }
+        dd($data);
+    });
+
+});
+
+Route::get('/lai', function(){
+//    $result = ApiController::RunCurlPostServices('account/authenticate', ["username: laiton", "password: password"]);
+    $result = ApiController::RunCurlPostServices(json_encode(['username' => 'laiton', 'password' => 'password']));
+    return $result;
 });

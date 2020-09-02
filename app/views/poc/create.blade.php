@@ -34,7 +34,16 @@
 
 
 
-
+				<!-- <div class="form-group">
+					{{ Form::label('ulin', trans('messages.ulin'), array('class' => 'required')) }}
+					@if($ulinFormat == 'Manual')
+					{{ Form::text('ulin', Input::old('ulin'),array('class' => 'form-control')) }}
+					@else
+					{{ Form::text('ulin', '',
+						array('class' => 'form-control', 'readonly' =>'true', 'placeholder' => 'Auto generated upon succesfull save!')) }}
+					@endif
+				</div> -->
+				
 				<div class="form-group">
 					{{ Form::label('infant_name', 'Infant Name', array('class' =>'col-sm-2 required ')) }}
 					{{ Form::text('infant_name', Input::old('infant_name'), array('class' => 'form-control col-sm-4')) }}
@@ -99,16 +108,7 @@
 
 				{{ Form::label('mother_name', 'Mothers Name', array('class' =>'col-sm-2 ')) }}
 				{{ Form::text('mother_name', Input::old('mother_name'), array('class' => 'form-control col-sm-4')) }}
-<!--
-				{{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class' =>'col-sm-2 ')) }}
-				{{ Form::select('mother_hiv_status', array_merge(array(null => 'select.....'), $hiv_status), Input::old('mother_hiv_status'), array('class' => 'form-control')) }} -->
-				<!-- {{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class'=>'control-label')) }}
-				{{ Form::select('mother_hiv_status', array_merge(array(null => 'Select.....'), $hiv_status), Input::old('mother_hiv_status'), array('class' => 'form-control', 'id' =>'mother_hiv_status')) }}
-				@if ($errors->has('mother_hiv_status'))
-						<span class="text-danger">
-								<strong>{{ $errors->first('mother_hiv_status') }}</strong>
-						</span>
-				@endif -->
+
 
 				{{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class' =>'col-sm-2')) }}
 				<div class="radio-inline">{{ Form::radio("mother_hiv_status", 'Positive', false) }} <span class="input-tag">Positive</span></div>
@@ -203,7 +203,7 @@
 				<div class="panel-body">
 
 					<div class="form-group">
-						{{ Form::label('sample_id', 'Sample ID:',array('class' =>'col-sm-2 required ')) }}
+						{{ Form::label('sample_id', 'Sample ID:',array('class' =>'col-sm-2')) }}
 						{{ Form::text('sample_id', Input::old('sample_id'), array('class' => 'form-control col-sm-4')) }}
 
 						{{ Form::label('collection_date', 'Sample Collection Date:', array('class' =>'col-sm-2 ')) }}
@@ -215,7 +215,7 @@
 
 						{{ Form::label('clinician_phone', 'Mobile Number:', array('class' =>'col-sm-2 ')) }}
 						{{ Form::text('clinician_phone', Auth::user()->phone_contact, array('class' => 'form-control col-sm-4')) }}
-						<!-- {{ Form::text('collection_date', Input::old('collection_date'), array('class' => 'form-control standard-datepicker col-sm-4', 'placeholder' => 'DD/ MM /YYYY')) }} -->
+						
 					</div>
 					<br>
 

@@ -25,7 +25,7 @@
     <div class='container-fluid'>
         {{ Form::open(array('route' => array('unhls_test.index'))) }}
             <div class='row'>
-                <div class='col-md-3'>
+                <div class='col-md-2'>
                     <div class='col-md-2'>
                         {{ Form::label('date_from', trans('messages.from')) }}
                     </div>
@@ -34,7 +34,7 @@
                             array('class' => 'form-control standard-datepicker')) }}
                     </div>
                 </div>
-                <div class='col-md-3'>
+                <div class='col-md-2'>
                     <div class='col-md-2'>
                         {{ Form::label('date_to', trans('messages.to')) }}
                     </div>
@@ -52,6 +52,7 @@
                             Input::get('test_status'), array('class' => 'form-control')) }}
                     </div>
                 </div>
+                <!--  -->
                 <div class='col-md-2'>
                         {{ Form::label('search', trans('messages.search'), array('class' => 'sr-only')) }}
                         {{ Form::text('search', Input::get('search'),
@@ -64,40 +65,37 @@
         {{ Form::close() }}
     </div>
     <div class='container-fluid'>
-        <?php
-        $current_date = new DateTime();
-
-        ?>
-    <ul class="nav navbar-nav navbar-left">
-
-    <li><a href="{{ URL::route('unhls_test.pending')}}">
-      <span class="ion-planet">
-    <font size="3">  Pending <span class="badge badge-danger"> {{ $count = UnhlsTest::where('test_status_id', '=', '2')->where('time_created', '=', Carbon::now()->toDateString())->count()}}</span></font>
-    </span>
-        </a>
-    </li>
         
-    <li><a href="{{ URL::route('unhls_test.started')}}">
-      <span class="ion-chatbubbles">
-    <font size="3">  Started Tests <span class="badge badge-success"> {{ $count = UnhlsTest::where('test_status_id', '=', '3')->where('time_created', '=', $current_date->format('d'))->count()}}</font></span>
-    </span>
-        </a>
-    </li>
-    <li><a href="{{ URL::route('unhls_test.completed')}}">
-      <span class="ion-chatbubbles">
-    <font size="3">  Completed Tests <span class="badge badge-success"> {{ $count = UnhlsTest::where('test_status_id', '=', '4')->count()}}</font></span>
-    </span>
-        </a>
-    </li>
-    <li><a href="{{ URL::route('unhls_test.verified')}}">
-      <span class="ion-chatbubbles">
-    <font size="3">Reviewed<span class="badge badge-info"> {{ $count = UnhlsTest::where('test_status_id', '=', '5')->count()}}</font></span>
- </span>
-        </a>
-    </li>
-</ul>
+        <ul class="nav navbar-nav navbar-left">
 
-</div>
+            <li><a href="{{ URL::route('unhls_test.pending')}}">
+                <span class="ion-planet">
+                    <font size="3">  Pending <span class="badge badge-danger"> {{ $count = UnhlsTest::where('test_status_id', '=', '2')->count()}}</span></font>
+                </span>
+                </a>
+            </li>
+                
+            <li><a href="{{ URL::route('unhls_test.started')}}">
+                <span class="ion-chatbubbles">
+                    <font size="3">  Started Tests <span class="badge badge-success"> {{ $count = UnhlsTest::where('test_status_id', '=', '3')->count()}}</font></span>
+                </span>
+                </a>
+            </li>
+            <li><a href="{{ URL::route('unhls_test.completed')}}">
+                <span class="ion-chatbubbles">
+                    <font size="3">  Completed Tests <span class="badge badge-success"> {{ $count = UnhlsTest::where('test_status_id', '=', '4')->count()}}</font></span>
+                </span>
+                </a>
+            </li>
+            <li><a href="{{ URL::route('unhls_test.verified')}}">
+                <span class="ion-chatbubbles">
+                    <font size="3">Reviewed<span class="badge badge-info"> {{ $count = UnhlsTest::where('test_status_id', '=', '5')->count()}}</font></span>
+                </span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
 
     
 
@@ -165,10 +163,10 @@
                             }}</td> --> 
                         <!--Visit Number -->
                         <td>{{ $test->visit->patient->name.' ('.($test->visit->patient->getGender(true)).',
-                            '.$test->visit->patient->getAge('M'). ')'}}</td> <!--Patient Name -->
+                            '.$test->visit->exactAge('M'). ')'}}</td> <!--Patient Name -->
                         <!-- <td>{{ $test->getSpecimenId() }}</td>  --><!--Specimen ID -->
                         <td>{{ $test->testType->name }}</td> <!--Test-->
-                        <td class="<?php if($test->visit->urgency == 1) echo 'highliht'; else echo 'highlightedGreen';?>">{{ $test->visit->visit_type }}</td> <!--Visit Type -->
+                        <td class="<?php if($test->visit->urgency == 1) echo 'highliht';?>">{{ $test->visit->visit_type }}</td> <!--Visit Type -->
                         <td>{{ is_null($test->visit->ward) ? '':$test->visit->ward->name }}</td> <!--Unit -->
                         <!-- ACTION BUTTONS -->
                         <td>

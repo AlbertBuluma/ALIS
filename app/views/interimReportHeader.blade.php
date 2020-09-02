@@ -22,7 +22,8 @@
                 <td colspan="12" style="text-align:center;"><b>
                     <span style="font-size:12px">
                         {{ strtoupper(Config::get('constants.FACILITY_NAME')) }}<br>
-                    </span>
+                    </span> 
+                     {{Config::get('kblis.address-info')}}
                     </b>
                      {{Config::get('kblis.interim-report-name')}}
                 </td>

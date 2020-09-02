@@ -50,5 +50,14 @@
 		}
 		return $select_string;
 	}
+
+	
+	
+	function getEquipmentAndUniqueNumber(){
+		$query = "SELECT CONCAT(name,'-',unique_number) AS 'optiontext', id as optionvalue FROM unhls_equipment_inventory";
+		return getOptionValuesFromDatabaseQuery($query);
+	}
+	
+
 	
 ?>

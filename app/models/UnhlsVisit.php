@@ -125,6 +125,53 @@ class UnhlsVisit extends Eloquent
 		return $ward_name;
 		
 	}
+
+	public function exactAge($format = "YYMM", $at = NULL)
+	{
+		if(!$at)$at = new DateTime($this->created_at);
+
+		$dateOfBirth = new DateTime($this->patient->dob);
+		$interval = $dateOfBirth->diff($at);		
+		$age = "";
+
+		switch ($format) {
+			case 'ref_range_Y':
+				$seconds = ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + ($interval->s);
+				$age = $seconds/(365*24*60*60);
+				break;
+			case 'Y':
+			    
+				$age = $interval->y;break;
+			case 'YY':
+			    
+				$age = $interval->y ." years ";break;
+			default:
+				if($interval->y == 0){
+					
+					
+					if($interval->format('%a') > 31){
+						$age = $interval->format('%m months');
+					}else{
+						$age = $interval->format('%a days');
+					 }
+				}
+				elseif($interval->y > 0 && $interval->y <= 2){
+				
+					$age = $interval->format('%m') + 12 * $interval->format('%y')." months";
+				}
+				else{
+					
+					$age=$interval->y." years ";
+
+					$seconds = ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + ($interval->s);
+				    $age = round($seconds/(365*24*60*60), 1)." years ";
+				}
+				
+				break;
+		}
+
+		return $age;
+	}
 	/**
 	 * Search for visits meeting the given criteria
 	 *
@@ -263,11 +310,13 @@ class UnhlsVisit extends Eloquent
 
 		//\Log::info($sqlStatement);
 		//		where v.created_at >= '".$dateFrom."' and v.created_at <='".$dateTo." 23:59:59' ".$condition.
-		$resultset = DB::select($sqlStatement);
+		//$resultset = DB::select($sqlStatement);
 
 		
-		//var_dump($resultset);
-		return $resultset;
 		
+		
+		$resultset = DB::select(DB::raw($sqlStatement)); //$query is raw SQL query say SELECT * FROM a LEFT JOIN b on a.id = b.a_id GROUP BY a.id
+		
+		return $resultset;
 	}
 }

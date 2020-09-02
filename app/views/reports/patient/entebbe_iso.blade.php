@@ -2,6 +2,9 @@
 	 table {
 	 	padding: 2px;
 	 }
+	 img{
+		padding-left: 20px;
+	}
 </style>
 <table style="border-bottom: 1px solid #cecfd5; font-size:9px; font-family: Bookman Old Style;">
 	<thead>
@@ -86,7 +89,11 @@
 								</td>
 								@endif
 								<td>
-								{{ $result->result }}
+								@if($result->revised_result!=null)
+											{{$result->revised_result}} (Revised result)
+											@else
+											{{$result->result}}
+											@endif
 								</td>
 								<td>
 									{{ Measure::getRange($test->visit->patient, $result->measure_id) }}
@@ -113,7 +120,11 @@
 							</tr>	       
 							<tr>
 								<td width="50%" style="font-size:8px">
+									@if($test->time_revised!=null)
+									<b>Results Revision Date</b>:{{$test->time_revised}}
+									@else
 									<b>Results Entry Date</b>:{{ $test->time_completed }}
+									@endif
 								</td>
 								<td width="50%">
 									<b>{{trans('messages.tested-by')}}</b>:
@@ -121,8 +132,13 @@
 								</td>								
 							</tr>							
 							<tr>
+								@if($test->time_revised!=null)
+								<td></td>
+								<td></td>
+								@else
 								<td width="50%"><b>Reviewed by</b>:{{$test->verifiedBy->name}}</td>
-								<td width="50%"><b>Date Reviewed</b>:{{$test->time_verified}}</td>								
+								<td width="50%"><b>Date Reviewed</b>:{{$test->time_verified}}</td>	
+								@endif							
 							</tr>						
 						@endif
 						</tbody>
@@ -219,10 +235,10 @@
 <hr>
 
 <table>
-	<tr><td>{{ $qrcode }}</td></tr>
+	<tr><td></td></tr>
 	<tr>
 		<td>
-			<strong>Approved By :
+			<strong>Approved By : 
 				
 			  @if(isset($tests))
                 @if(!empty($tests->first()))
@@ -237,8 +253,7 @@
             @endif
             </strong>
 		</td>
-		<td> <p>Hello</p>{!! QrCode::generate($tests->id)!!}</td>
-		
+		 <!--  -->
 	</tr>
 	<!-- <tr><td><u><strong></strong></u></td></tr> -->
 </table>

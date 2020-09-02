@@ -102,8 +102,7 @@ class CliniciansController extends \BaseController {
     public function update($id)
     {
         //Validate
-        $rules = array('name' => 'required|unique:clinicians,name',
-            'phone' => 'required');
+        $rules = array();
         $validator = Validator::make(Input::all(), $rules);
 
         // process the login
@@ -116,6 +115,7 @@ class CliniciansController extends \BaseController {
             $clinician->cadre = Input::get('cadre');
             $clinician->phone = Input::get('phone');
             $clinician->email = Input::get('email');
+            $clinician->active = Input::get('active');
            	$clinician->save();
 
             // redirect

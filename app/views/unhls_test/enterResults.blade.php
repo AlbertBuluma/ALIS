@@ -232,6 +232,10 @@
                             </div>
                         @endforeach
                         <div class="form-group">
+                            {{  Form::label('equipment_id', 'Equipment used', array('class'=>'control-label')) }}
+                            {{ Form::select('equipment_id', $equipment_list, Input::old('equipment_id'), array('class' => 'form-control', 'id' => 'equipment_id')) }}                                                      
+                        </div>
+                        <div class="form-group">
                             {{ Form::label('comment', trans('messages.comments')) }}
                             {{ Form::textarea('interpretation', $test->interpretation, 
                                 array('class' => 'form-control result-interpretation', 'rows' => '2')) }}

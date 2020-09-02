@@ -70,7 +70,7 @@
 			<b><i>Emergency</i></b>
 			@else
 			<span><i>Normal</i></span>
-			<span>Mob:: {{$tests->first()->clinician->phone}}</span>
+			<span>Mob:: </span>
 			@endif</td>
 		</tr>
 		@endif
@@ -105,12 +105,8 @@
                     N/A
                     @endif
              @endif</td>
-	                    <td width="30%"> @if(isset($tests))
-                   {{$tests->first()->clinician->cadre}}
-            @endif</td>
-	                    <td width="30%"> @if(isset($tests))
-                   {{$tests->first()->clinician->phone}}
-            @endif</td>
+	                    <td width="30%"></td>
+	                    <td width="30%"></td>
 
 	                    
 	                </tr>
@@ -188,7 +184,7 @@
 	            <th width="15%"><strong>Time Received</strong></th>
 	            <th width="20%"><strong>Sample Suitability</strong></th>
 	            <th width="20%"><strong>Name</strong></th>
-	            <th width="10%"><strong>RHSP Number</strong></th>
+	            <th width="10%"><strong>Number</strong></th>
 	            
 	        </tr>
 	</thead>
@@ -218,7 +214,7 @@
 	                    Rejected
 	                	@endif</td>
 	                    <td width="20%">{{ isset($test->tested_by)?$test->testedBy->name :'' }}</td>
-	                    <td width="10%">{{ isset($test->tested_by)?$test->testedBy->rhsp_number:'' }}</td>
+	                    <td width="10%"></td>
 
 	                </tr>
 	        @empty

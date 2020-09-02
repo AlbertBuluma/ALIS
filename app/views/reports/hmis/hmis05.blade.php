@@ -2677,8 +2677,8 @@ h6 {
       <td class="c53 c65" colspan="2" rowspan="8"><p class="c0"><span class="c1"></span></p></td>
       <td class="c28" colspan="1" rowspan="2"><p class="c0"><span class="c1"></span></p>
         <p class="c6"><span class="c1">44. VDRL/ RPR</span></p></td>
-      <td class="c47" colspan="1" rowspan="2"><p class="c0"><span class="c1">{{$serology_test_counts['vdrl_rrr']}}</span></p></td>
-      <td class="c61" colspan="1" rowspan="2"><p class="c0"><span class="c1">{{$serology_test_counts['vdrl_rrr1']}}</span></p></td>
+      <td class="c47" colspan="1" rowspan="2"><p class="c0"><span class="c1">{{$serology_test_counts['vdrl_rpr']}}</span></p></td>
+      <td class="c61" colspan="1" rowspan="2"><p class="c0"><span class="c1">{{$serology_test_counts['vdrl_rpr1']}}</span></p></td>
     </tr>
     <tr class="c17">
       <td class="c18" colspan="1" rowspan="1"><p class="c6"><span class="c1">02. CBC</span></p></td>

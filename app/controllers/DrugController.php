@@ -120,7 +120,8 @@ class DrugController extends \BaseController {
 
 			// redirect
 			$url = Session::get('SOURCE_URL');
-            
+
+
             return Redirect::to($url)
 				->with('message', trans('messages.success-updating-drug')) ->with('activetestcategory', $drug ->id);
 		}

@@ -47,6 +47,7 @@
 			<thead>
 				<tr>
 					<th>#</th>
+					<th>ULIN</th>
 					<th>Sample ID</th>
 					<th>Infant Name</th>
 					<th>Gender</th>
@@ -68,6 +69,7 @@
 
 				<tr>
 					<td class="text-center">{{ $row }}</td>
+					<td>{{ $patient->ulin }}</td>
 					<td>{{ $patient->sample_id }}</td>
 					<td>{{ $patient->infant_name }}</td>
 					<td>{{ $patient->gender }}</td>

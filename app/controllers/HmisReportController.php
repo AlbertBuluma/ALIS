@@ -55,6 +55,19 @@ class HmisReportController extends \BaseController {
 		$skin_specimen_rejection = $this->getSkinSpecimenRejectionCounts($month);
 		$other_specimen_rejection = $this->getOtherSpecimenRejectionCounts($month);
 		$isolates = $this->getIsolateCounts($month);
+
+		// $test_request_information  = array(
+		// 	'tests' => $testTypes 
+		// 	);
+		// $pdf = new RevisedReportPdf;
+		// $pdf->setTestRequestInformation($test_request_information);
+
+		// $pdf->SetAutoPageBreak(TRUE, 15);
+		// $pdf->AddPage();
+		// $pdf->SetFont('times','','11');
+		// $pdf->writeHTML($content, 'true', 'false', 'false', 'false', '');
+
+		// return $pdf->output('report.pdf');
 		return View::make('reports.hmis.hmis05')
 							->with('month', $month)
 							->with('isolates', $isolates)
@@ -151,42 +164,42 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	 $genital_swab_collected_in = 0; $genital_swab_collected_out = 0;
 	 $skin_collected_in = 0; $skin_collected_out = 0;
 	 $others_collected_in = 0; $others_collected_out = 0;
-	 $specimen_of_interest = array(23,13,20,24,27,14,17,16,11,7);
+	 $specimen_of_interest = array(22,13,26,24,27,14,17,16,11,7);
 	 foreach ($samples_on_visit as $sample_on_visit){
 	 	//samples in = out-patient + in-patients visit_types
 	 	//the id is the specimen_type
 	 	if(in_array($sample_on_visit->id, $specimen_of_interest)){
-		 	if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 23){
+		 	if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 22){
 		 		$blood_collected_in++;
-		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 23){
+		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 22){
 		 		$blood_collected_out++;
 		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 13){
 		 		$stool_collected_in++;
 		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 13){
 		 		$stool_collected_out++;
-		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 20){
+		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 26){
 		 		$urine_collected_in++;
-		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 20){
+		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 26){
 		 		$urine_collected_out++;
 		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 24){
 		 		$sputum_collected_in++;
 		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 24){
 		 		$sputum_collected_out++;
-		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 14){
-		 		$csf_collected_in++;
-		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 14){
-		 		$csf_collected_out++;
 		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 27){
-		 		$biopsy_collected_in++;
+		 		$csf_collected_in++;
 		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 27){
+		 		$csf_collected_out++;
+		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 14){
+		 		$biopsy_collected_in++;
+		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 14){
 		 		$biopsy_collected_out++;
-		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 16){
+		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 17){
 		 		$pus_swab_collected_in++;
-		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 16){
+		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 17){
 		 		$pus_swab_collected_out++;
-		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 11){
+		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 16){
 		 		$genital_swab_collected_in++;
-		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 11){
+		 	}else if($sample_on_visit->visit_type == 'Referral' && $sample_on_visit->id == 16){
 		 		$genital_swab_collected_out++;
 		 	}else if(($sample_on_visit->visit_type == 'Out-patient' || $sample_on_visit->visit_type == 'In-patient') && $sample_on_visit->id == 7){
 		 		$skin_collected_in++;
@@ -226,7 +239,8 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	return $sample_counts_array;
 	}
 	private function getTestCountsByLabSection($lab_section_id, $month){
-		$query = "select ut.test_type_id, tt.name, utr.measure_id, tt.test_category_id as lab_section, count(ut.id) as total FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id AND tt.test_category_id = $lab_section_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id)
+		$query = "select ut.test_type_id, tt.name, utr.measure_id, mnm.measure_id as M2, mnm.system_name, tt.test_category_id as lab_section, count(ut.id) as total FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id AND tt.test_category_id = $lab_section_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id)
+			LEFT JOIN measure_name_mappings mnm ON(utr.measure_id = mnm.measure_id)
 			 WHERE `ut`.`time_created` LIKE '%".$month."%' 
 			 GROUP BY measure_id";
 		
@@ -235,7 +249,8 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	}
 
 	private function getAlphanumericTestCountsByLabSection($lab_section_id, $month){
-		$query = "select ut.test_type_id, tt.name, utr.measure_id, tt.test_category_id as lab_section, count(ut.id) as total, SUM(case when mr.interpretation = 'Positive' then 1 else 0 end) as Positive, SUM(case when mr.interpretation = 'Negative' then 1 else 0 end) as Negative FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id) INNER JOIN testtype_measures ttm ON(ttm.measure_id = utr.measure_id) INNER JOIN measure_ranges mr ON(mr.measure_id = utr.measure_id AND mr.alphanumeric = utr.result)
+		$query = "select ut.test_type_id, tt.name, utr.measure_id, mnm.measure_id as M2, mnm.system_name, tt.test_category_id as lab_section, count(ut.id) as total, SUM(case when mr.interpretation = 'Positive' then 1 else 0 end) as Positive, SUM(case when mr.interpretation = 'Negative' then 1 else 0 end) as Negative FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id) INNER JOIN testtype_measures ttm ON(ttm.measure_id = utr.measure_id) INNER JOIN measure_ranges mr ON(mr.measure_id = utr.measure_id AND mr.alphanumeric = utr.result)
+		LEFT JOIN measure_name_mappings mnm ON(utr.measure_id = mnm.measure_id)
 		WHERE `ut`.`time_created` LIKE '%".$month."%'
 		GROUP BY measure_id";
 		
@@ -244,12 +259,13 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	}
 
 	private function getReferralTestCountsByLabSection($lab_section_id, $month){
-		$query = "select test_type_id, utr.test_id, tt.test_category_id as lab_section, count(rr.id) as total, count(rr.id)-count(utr.id) as Pending, DATE_FORMAT(rr.created_at,'%Y%m') year_month_created, ut.time_started,
+		$query = "select test_type_id, utr.test_id, utr.measure_id, mnm.measure_id as M2, mnm.system_name, tt.test_category_id as lab_section, count(rr.id) as total, count(rr.id)-count(utr.id) as Pending, DATE_FORMAT(rr.created_at,'%Y%m') year_month_created, ut.time_started,
 						ut.time_verified, ut.time_approved,
 						TIMESTAMPDIFF(MINUTE, ut.time_created, ut.time_approved) as waiting_time,
 						TIMESTAMPDIFF(MINUTE, rr.created_at, ut.time_verified) as testing_time,
                         SUM(TIMESTAMPDIFF(MINUTE, rr.created_at, ut.time_approved)) / count(rr.id) as AverageTAT  FROM referrals rr 
 			LEFT JOIN unhls_test_results utr ON(rr.test_id = utr.test_id AND rr.status = $lab_section_id)
+			LEFT JOIN measure_name_mappings mnm ON(utr.measure_id = mnm.measure_id)
 			INNER JOIN unhls_tests ut ON(rr.test_id = ut.id)
 			INNER JOIN test_types tt ON(ut.test_type_id = tt.id)
 			WHERE `ut`.`time_created` LIKE '%".$month."%' GROUP BY test_type_id";
@@ -262,9 +278,10 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	//Input the id for the specified tests within this section e.g cd4, tb, cbc, hiv_screening and vdrl
 
 	private function getReferralTestCountsByReasons($lab_section_id, $month){
-		$query = "select ut.test_type_id, tt.test_category_id, count(rr.id) as total, SUM(case when ut.test_type_id = 60 then 1 else 0 end) as cd4_total, SUM(case when ut.test_type_id = 61 then 1 else 0 end) as tb_total, SUM(case when ut.test_type_id = 62 then 1 else 0 end) as hiv_total, SUM(case when ut.test_type_id = 60 then 1 else 0 end) as vdrl_total, SUM(case when ut.test_type_id = 60 then 1 else 0 end) as cbc_total FROM referrals rr 
+		$query = "select ut.test_type_id, tt.test_category_id, count(rr.id) as total, SUM(case when tnm.system_name = 'cd4' then 1 else 0 end) as cd4_total, SUM(case when tnm.system_name = 'tb_genexpert' then 1 else 0 end) as tb_total, SUM(case when tnm.system_name = 'hiv' then 1 else 0 end) as hiv_total, SUM(case when tnm.system_name = 'vdrl_rpr' then 1 else 0 end) as vdrl_total, SUM(case when tnm.system_name = 'cbc' then 1 else 0 end) as cbc_total FROM referrals rr 
 		INNER JOIN referral_reasons rrs ON(rr.referral_reason = rrs.id AND rr.referral_reason = $lab_section_id)
 		INNER JOIN unhls_tests ut ON(rr.test_id = ut.id)
+		LEFT JOIN test_name_mappings tnm ON(ut.test_type_id = tnm.test_type_id)
 		INNER JOIN test_types tt ON(ut.test_type_id = tt.id)
 		WHERE `rr`.`sample_date` LIKE '%".$month."%'
 		GROUP BY test_category_id";
@@ -368,47 +385,31 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$rows = $this->getTestCountsByLabSection($test_type_ids['test_category_id'],$month);
 		//$test_type_counts = $this->getTestTypeInitialCounts('hematology');
 		$test_type_counts['hb_non_automated'] = 0;
-		$test_type_counts['vdrl_rrr'] = 0;
 		$test_type_counts['cbc'] = 0;
 		$test_type_counts['film_comment'] = 0;
-		$test_type_counts['tpha'] = 0;
 		$test_type_counts['esr'] = 0;
-		$test_type_counts['shigella_dysentery'] = 0;
 		$test_type_counts['bleeding_time'] = 0;
-		$test_type_counts['Hepatitisb_sags'] = 0;
 		$test_type_counts['prothrombin_time'] = 0;
-		$test_type_counts['brucella'] = 0;
 		$test_type_counts['clotting_time'] = 0;
-		$test_type_counts['pregnancy_test'] = 0;
 		$test_type_counts['sickle_cell'] = 0;
 		$test_type_counts['others'] = 0;
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['hb_non_automated']){
+	 		if($row->system_name == $test_type_ids['hb_non_automated']){
 	 			$test_type_counts['hb_non_automated'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['vdrl_rrr']){
-	 			$test_type_counts['vdrl_rrr'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['cbc']){
+	 		}else if($row->system_name == $test_type_ids['cbc']){
 	 			$test_type_counts['cbc'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['film_comment']){
+	 		}else if($row->system_name == $test_type_ids['film_comment']){
 	 			$test_type_counts['film_comment'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['tpha']){
-	 			$test_type_counts['tpha'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['esr']){
+	 		}else if($row->system_name == $test_type_ids['esr']){
 	 			$test_type_counts['esr'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['bleeding_time']){
+	 		}else if($row->system_name == $test_type_ids['bleeding_time']){
 	 			$test_type_counts['bleeding_time'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['Hepatitisb_sags']){
-	 			$test_type_counts['Hepatitisb_sags'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['prothrombin_time']){
+	 		}else if($row->system_name == $test_type_ids['prothrombin_time']){
 	 			$test_type_counts['prothrombin_time'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['brucella']){
-	 			$test_type_counts['brucella'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['clotting_time']){
+	 		}else if($row->system_name == $test_type_ids['clotting_time']){
 	 			$test_type_counts['clotting_time'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['pregnancy_test']){
-	 			$test_type_counts['pregnancy_test'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['sickle_cell']){
+	 		}else if($row->system_name == $test_type_ids['sickle_cell']){
 	 			$test_type_counts['sickle_cell'] = $row->total;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
@@ -421,8 +422,8 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$test_type_ids = $this->getTestTypeIDs('serology');
 		$rows = $this->getAlphanumericTestCountsByLabSection($test_type_ids['test_category_id'],$month);
 		//$test_type_counts = $this->getTestTypeInitialCounts('hematology');
-		$test_type_counts['vdrl_rrr'] = 0;
-		$test_type_counts['vdrl_rrr1'] = 0;
+		$test_type_counts['vdrl_rpr'] = 0;
+		$test_type_counts['vdrl_rpr1'] = 0;
 		$test_type_counts['tpha'] = 0;
 		$test_type_counts['tpha1'] = 0;
 		$test_type_counts['shigella_dysentery'] = 0;
@@ -447,37 +448,37 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['vdrl_rrr']){
-	 			$test_type_counts['vdrl_rrr'] = $row->total;
-	 			$test_type_counts['vdrl_rrr1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['tpha']){
+	 		if($row->system_name == $test_type_ids['vdrl_rpr']){
+	 			$test_type_counts['vdrl_rpr'] = $row->total;
+	 			$test_type_counts['vdrl_rpr1'] = $row->Positive;
+	 		}else if($row->system_name == $test_type_ids['tpha']){
 	 			$test_type_counts['tpha'] = $row->total;
 	 			$test_type_counts['tpha1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['hepatitisb_sags']){
+	 		}else if($row->system_name == $test_type_ids['hepatitisb_sags']){
 	 			$test_type_counts['hepatitisb_sags'] = $row->total;
 	 			$test_type_counts['hepatitisb_sags1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['brucella']){
+	 		}else if($row->system_name == $test_type_ids['brucella']){
 	 			$test_type_counts['brucella'] = $row->total;
 	 			$test_type_counts['brucella1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['pregnancy_test']){
+	 		}else if($row->system_name == $test_type_ids['pregnancy_test']){
 	 			$test_type_counts['pregnancy_test'] = $row->total;
 	 			$test_type_counts['pregnancy_test1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['crag']){
+	 		}else if($row->system_name == $test_type_ids['crag']){
 	 			$test_type_counts['crag'] = $row->total;
 	 			$test_type_counts['crag1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['shigella_dysentery']){
+	 		}else if($row->system_name == $test_type_ids['shigella_dysentery']){
 	 			$test_type_counts['shigella_dysentery'] = $row->total;
 	 			$test_type_counts['shigella_dysentery1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['rheumatoid_factor']){
+	 		}else if($row->system_name == $test_type_ids['rheumatoid_factor']){
 	 			$test_type_counts['rheumatoid_factor'] = $row->total;
 	 			$test_type_counts['rheumatoid_factor1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['hepb_core_ag']){
+	 		}else if($row->system_name == $test_type_ids['hepb_core_ag']){
 	 			$test_type_counts['hepb_core_ag'] = $row->total;
 	 			$test_type_counts['hepb_core_ag1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['hepa']){
+	 		}else if($row->system_name == $test_type_ids['hepa']){
 	 			$test_type_counts['hepa'] = $row->total;
 	 			$test_type_counts['hepa1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['hepc']){
+	 		}else if($row->system_name == $test_type_ids['hepc']){
 	 			$test_type_counts['hepc'] = $row->total;
 	 			$test_type_counts['hepc1'] = $row->Positive;
 	 		}else{
@@ -510,25 +511,25 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['auramine_fm']){
+	 		if($row->system_name == $test_type_ids['auramine_fm']){
 	 			$test_type_counts['auramine_fm'] = $row->total;
-	 			$test_type_counts['auramine_fm1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['zn_for_afb']){
+	 			// $test_type_counts['auramine_fm1'] = $row->Positive;
+	 		}else if($row->system_name == $test_type_ids['zn_for_afb']){
 	 			$test_type_counts['zn_for_afb'] = $row->total;
 	 			$test_type_counts['zn_for_afb1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['gram']){
+	 		}else if($row->system_name == $test_type_ids['gram']){
 	 			$test_type_counts['gram'] = $row->total;
 	 			$test_type_counts['gram1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['india_ink']){
+	 		}else if($row->system_name == $test_type_ids['india_ink']){
 	 			$test_type_counts['india_ink'] = $row->total;
 	 			$test_type_counts['india_ink1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['urine_microscopy']){
+	 		}else if($row->system_name == $test_type_ids['urine_microscopy']){
 	 			$test_type_counts['urine_microscopy'] = $row->total;
 	 			$test_type_counts['urine_microscopy1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['wet_prep']){
+	 		}else if($row->system_name == $test_type_ids['wet_prep']){
 	 			$test_type_counts['wet_prep'] = $row->total;
-	 			$test_type_counts['wet_prep1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['leishman_stain']){
+	 			// $test_type_counts['wet_prep1'] = $row->Positive;
+	 		}else if($row->system_name == $test_type_ids['leishman_stain']){
 	 			$test_type_counts['leishman_stain'] = $row->total;
 	 			$test_type_counts['leishman_stain1'] = $row->Positive;
 	 		}else{
@@ -555,19 +556,19 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['malaria_microscopy']){
+	 		if($row->system_name == $test_type_ids['malaria_microscopy']){
 	 			$test_type_counts['malaria_microscopy'] = $row->total;
 	 			$test_type_counts['malaria_microscopy1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['malaria_rdts']){
+	 		}else if($row->system_name == $test_type_ids['malaria_rdts']){
 	 			$test_type_counts['malaria_rdts'] = $row->total;
 	 			$test_type_counts['malaria_rdts1'] = $row->Positive;
-	 		}else if((int)$row->measure_id == $test_type_ids['micro_filaria']){
+	 		}else if($row->system_name == $test_type_ids['micro_filaria']){
 	 			$test_type_counts['micro_filaria'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['leishmania']){
+	 		}else if($row->system_name == $test_type_ids['leishmania']){
 	 			$test_type_counts['leishmania'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['trichinella']){
+	 		}else if($row->system_name == $test_type_ids['trichinella']){
 	 			$test_type_counts['trichinella'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['borrellia']){
+	 		}else if($row->system_name == $test_type_ids['borrellia']){
 	 			$test_type_counts['borrellia'] = $row->total;
 	 		}else{
 	 			$test_type_counts['trypasonoma'] = $row->total;
@@ -595,27 +596,27 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$test_type_counts['other_parasites'] = 0;
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['entamoeba']){
+	 		if($row->system_name == $test_type_ids['entamoeba']){
 	 			$test_type_counts['entamoeba'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['giardia']){
+	 		}else if($row->system_name == $test_type_ids['giardia']){
 	 			$test_type_counts['giardia'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['cryptosporidium']){
+	 		}else if($row->system_name == $test_type_ids['cryptosporidium']){
 	 			$test_type_counts['cryptosporidium'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['isospora']){
+	 		}else if($row->system_name == $test_type_ids['isospora']){
 	 			$test_type_counts['isospora'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['cyclospora']){
+	 		}else if($row->system_name == $test_type_ids['cyclospora']){
 	 			$test_type_counts['cyclospora'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['strongyloides']){
+	 		}else if($row->system_name == $test_type_ids['strongyloides']){
 	 			$test_type_counts['strongyloides'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['shistosoma']){
+	 		}else if($row->system_name == $test_type_ids['shistosoma']){
 	 			$test_type_counts['shistosoma'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['taenia']){
+	 		}else if($row->system_name == $test_type_ids['taenia']){
 	 			$test_type_counts['taenia'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['askaris']){
+	 		}else if($row->system_name == $test_type_ids['askaris']){
 	 			$test_type_counts['askaris'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['hookworm']){
+	 		}else if($row->system_name == $test_type_ids['hookworm']){
 	 			$test_type_counts['hookworm'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['trichuris']){
+	 		}else if($row->system_name == $test_type_ids['trichuris']){
 	 			$test_type_counts['trichuris'] = $row->total;
 	 		}else{
 	 			$test_type_counts['other_parasites'] = $row->total;
@@ -652,45 +653,45 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$test_type_counts['others'] = 0;
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['urea']){
+	 		if($row->system_name == $test_type_ids['urea']){
 	 			$test_type_counts['urea'] =$row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['calcium']){
+	 		}else if($row->system_name == $test_type_ids['calcium']){
 	 			$test_type_counts['calcium'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['potassium']){
+	 		}else if($row->system_name == $test_type_ids['potassium']){
 	 			$test_type_counts['potassium'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['sodium']){
+	 		}else if($row->system_name == $test_type_ids['sodium']){
 	 			$test_type_counts['sodium'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['creatinine']){
+	 		}else if($row->system_name == $test_type_ids['creatinine']){
 	 			$test_type_counts['creatinine'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['alt']){
+	 		}else if($row->system_name == $test_type_ids['alt']){
 	 			$test_type_counts['alt'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['ast']){
+	 		}else if($row->system_name == $test_type_ids['ast']){
 	 			$test_type_counts['ast'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['albumin']){
+	 		}else if($row->system_name == $test_type_ids['albumin']){
 	 			$test_type_counts['albumin'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['total_protein']){
+	 		}else if($row->system_name == $test_type_ids['total_protein']){
 	 			$test_type_counts['total_protein'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['triglycerides']){
+	 		}else if($row->system_name == $test_type_ids['triglycerides']){
 	 			$test_type_counts['triglycerides'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['cholesterol']){
+	 		}else if($row->system_name == $test_type_ids['cholesterol']){
 	 			$test_type_counts['cholesterol'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['free_t3']){
+	 		}else if($row->system_name == $test_type_ids['free_t3']){
 	 			$test_type_counts['free_t3'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['free_t4']){
+	 		}else if($row->system_name == $test_type_ids['free_t4']){
 	 			$test_type_counts['free_t4'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['tsh']){
+	 		}else if($row->system_name == $test_type_ids['tsh']){
 	 			$test_type_counts['tsh'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['alkaline_phosphate']){
+	 		}else if($row->system_name == $test_type_ids['alkaline_phosphate']){
 	 			$test_type_counts['alkaline_phosphate'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['amylase']){
+	 		}else if($row->system_name == $test_type_ids['amylase']){
 	 			$test_type_counts['amylase'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['glucose']){
+	 		}else if($row->system_name == $test_type_ids['glucose']){
 	 			$test_type_counts['glucose'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['total_bilirubin']){
+	 		}else if($row->system_name == $test_type_ids['total_bilirubin']){
 	 			$test_type_counts['total_bilirubin'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['lipase']){
+	 		}else if($row->system_name == $test_type_ids['lipase']){
 	 			$test_type_counts['lipase'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['afp']){
+	 		}else if($row->system_name == $test_type_ids['afp']){
 	 			$test_type_counts['afp'] = $row->total;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
@@ -706,11 +707,11 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$test_type_counts = $this->getTestTypeInitialCounts('blood_transfusion');
 	 	foreach($rows as $row){
 	 		//dd($row);
-	 		if((int)$row->measure_id == $test_type_ids['ahb_combs_test']){
+	 		if($row->system_name == $test_type_ids['ahb_combs_test']){
 	 			$test_type_counts['ahb_combs_test'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['abo_grouping']){
+	 		}else if($row->system_name == $test_type_ids['abo_grouping']){
 	 			$test_type_counts['abo_grouping'] = $row->total;
-	 		}else if((int)$row->measure_id == $test_type_ids['cross_matching']){
+	 		}else if($row->system_name == $test_type_ids['cross_matching']){
 	 			$test_type_counts['cross_matching'] = $row->total;
 	 		}
 
@@ -727,7 +728,7 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if((int)$row->specimen_id = $test_type_ids['blood']){
-	 			$test_type_counts['blood'] = $row->total;
+	 			$test_type_counts['blood'] = $test_type_counts['blood'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['urine']){
 	 			$test_type_counts['urine'] = $test_type_counts['urine'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['stool']){
@@ -735,21 +736,21 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	 		}else if((int)$row->specimen_id = $test_type_ids['sputum']){
 	 			$test_type_counts['sputum'] = $test_type_counts['sputum'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['nosal_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['nosal_swab'] = $test_type_counts['nosal_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['rectal_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['rectal_swab'] = $test_type_counts['rectal_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['wound_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['wound_swab'] = $test_type_counts['wound_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['pus_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['pus_swab'] = $test_type_counts['pus_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['eye_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['eye_swab'] = $test_type_counts['eye_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['ear_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['ear_swab'] = $test_type_counts['ear_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['throat_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['throat_swab'] = $test_type_counts['throat_swab'] + 1;
 	 		}else if((int)$row->specimen_id = $test_type_ids['uretheral_swab']){
-	 			$test_type_counts['swabs'] = $test_type_counts['swabs'] + 1;
+	 			$test_type_counts['uretheral_swab'] = $test_type_counts['uretheral_swab'] + 1;
 	 		}
 
 	 	}
@@ -757,7 +758,6 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	}
 	private function getImmunologyCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('immunology');
-		// $test_type_counts = $this->getTestTypeInitialCounts('immunology');
 		$rows = $this->getTestCountsByLabSection($test_type_ids['test_category_id'],$month);
 	 	$test_type_counts['cd4'] = 0;
 		$test_type_counts['hiv_viral_load'] = 0;
@@ -779,14 +779,13 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 		$test_type_counts = $this->getTestTypeInitialCounts('molecular');
 		$rows = $this->getTestCountsByLabSection($test_type_ids['test_category_id'],$month);
 	 	foreach($rows as $row){
-	 		//dd($row);
-	 		if((int)$row->test_type_id == $test_type_ids['tb_genexpert']){
+	 		if($row->system_name == $test_type_ids['tb_genexpert']){
 	 			$test_type_counts['tb_genexpert'] = $row->total;
 	 			$test_type_counts['tb_genexpert1'] = $row->total;
-	 		}else if((int)$row->test_type_id == $test_type_ids['latent_tb']){
+	 		}else if($row->system_name == $test_type_ids['latent_tb']){
 	 			$test_type_counts['latent_tb'] = $row->total;
 	 			$test_type_counts['latent_tb1'] = $row->total;
-	 		}else if((int)$row->test_type_id == $test_type_ids['tb_lam']){
+	 		}else if($row->system_name == $test_type_ids['tb_lam']){
 	 			$test_type_counts['tb_lam'] = $row->total;
 	 			$test_type_counts['tb_lam1'] = $row->total;
 	 		}
@@ -4779,13 +4778,7 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 
 
 	private function getTestTypeIDs($lab_section){
-		$measure_name_mappings_list = MeasureNameMapping::get();
-		// foreach ($measure_name_mappings_list as $key => $value) {
-		// 	\Log::info("....1.....");
-		// 	\Log::info($value);
-		// 	\Log::info("....2.....");
-		// }
-	    $measure_map = ['wbc'=>67,];
+		
 		$test_type_ids = [
 						'isolate'=>
 							[
@@ -4807,153 +4800,153 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 						'hematology'=>
 							[ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 3, //the id of the hematology - check test_categories table
-							'hb_non_automated' => 4, 
-							'vdrl_rrr' => 12,
-							'cbc' => 80,
-							'film_comment' => 59,
-							'tpha' => 36,
-							'esr' =>60, 
-							'shigella_dysentery' => 105,
-							'bleeding_time' => 100,
-							'Hepatitisb_sags' => 110,
-							'prothrombin_time' => 115,
-							'brucella' => 14,
-							'clotting_time' => 120,
-							'pregnancy_test' => 42,
-							'sickle_cell' => 10,
+							'hb_non_automated' => 'hb_non_automated', 
+							'vdrl_rpr' => 'vdrl_rpr',
+							'cbc' => 'wbc',
+							'film_comment' => 'film_comment',
+							'tpha' => 'tpha',
+							'esr' =>'esr', 
+							'shigella_dysentery' => 'shigella_dysentery',
+							'bleeding_time' => 'bleeding_time',
+							'Hepatitisb_sags' => 'Hepatitisb_sags',
+							'prothrombin_time' => 'prothrombin_time',
+							'brucella' => 'brucella',
+							'clotting_time' => 'clotting_time',
+							'pregnancy_test' => 'pregnancy_test',
+							'sickle_cell' => 'sickle_cell',
 						],
 						'serology' => [ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 4, //the id of the serology - check test_categories table
-							'vdrl_rrr' => 12, 
-							'tpha' => 36,
-							'shigella_dysentery' => 104,
-							'hepatitisb_sags' => 106,
-							'brucella' => 14,
-							'pregnancy_test' => 42,
-							'crag' => 108,
-							'rheumatoid_factor' => 111,
-							'hepb_core_ag' => 30,
-							'hepa' => 114,
-							'hepc' => 116,
+							'vdrl_rpr' => 'vdrl_rpr', 
+							'tpha' => 'tpha',
+							'shigella_dysentery' => 'shigella_dysentery',
+							'hepatitisb_sags' => 'hepatitisb_sags',
+							'brucella' => 'brucella',
+							'pregnancy_test' => 'hcg',
+							'crag' => 'crag',
+							'rheumatoid_factor' => 'rheumatoid_factor',
+							'hepb_core_ag' => 'hepb_core_ag',
+							'hepa' => 'hepa',
+							'hepc' => 'hepc',
 						],
 						'blood_transfusion' => [ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 5, //the id of the serology - check test_categories table
-							'ahb_combs_test' => 8,
-							'abo_grouping' => 50,
+							'ahb_combs_test' => 'ahb_combs_test',
+							'abo_grouping' => 'abo_grouping',
 							'rhesus_grouping' => 'N/A',
-							'cross_matching' => 51,
+							'cross_matching' => 'cross_matching',
 						],
 						//test based analysis
 						'culture_and_sensitivity_specimen' => [ //Input the measure_id for a test type in this section
 							'test_type_id' => 5, //the id of the cul n sens test - check test_types table
-							'blood' => 23,
-							'urine' => 20,
-							'stool' => 16,
+							'blood' => 22,
+							'urine' => 26,
+							'stool' => 13,
 							'sputum' => 24,
-							'nosal_swab' => 6,
-							'rectal_swab' => 11,
+							'nosal_swab' => 3,
+							'rectal_swab' => 5,
 							'wound_swab' => 15,
-							'pus_swab' => 10,
-							'eye_swab' => 27,
-							'ear_swab' => 27,
-							'throat_swab' => 18,
-							'uretheral_swab' => 27,
+							'pus_swab' => 16,
+							'eye_swab' => 18,
+							'ear_swab' => 19,
+							'throat_swab' => 20,
+							'uretheral_swab' => 25,
 						],
 						'microbiology' => [ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 2, //the id of the serology - check test_categories table
 							'test_type_id' => 5, //the id of the microbiology test - check test_types table
-							'auramine_fm' => 20,
-							'zn_for_afb' => 20,
-							'leishman_stain' => 26,
-							'gram' => 13,
-							'india_ink' => 24,
-							'urine_microscopy' => 3,
-							'wet_prep' => 159,
+							'auramine_fm' => 'auramine_fm',
+							'zn_for_afb' => 'zn_for_afb',
+							'leishman_stain' => 'leishman_stain',
+							'gram' => 'gram',
+							'india_ink' => 'india_ink',
+							'urine_microscopy' => 'urine_microscopy',
+							'wet_prep' => 'wet_prep',
 							//'others' => 15,
 							
 						],
 						'parasitology' => [ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 1, //the id of the serology - check test_categories table
 							'test_type_id' => 5, //the id of the parasitology test - check test_types table
-							'malaria_microscopy' => 1,
-							'malaria_rdts' => 109,
-							'trypasonoma' => 13,
-							'micro_filaria' => 24,
-							'leishmania' => 3,
-							'trichinella' => 5,
-							'borrellia' => 15,
+							'malaria_microscopy' => 'bs_for_mps',
+							'malaria_rdts' => 'malaria_rdts',
+							'trypasonoma' => 'trypasonoma',
+							'micro_filaria' => 'micro_filaria',
+							'leishmania' => 'leishmania',
+							'trichinella' => 'trichinella',
+							'borrellia' => 'borrellia',
 						],
 						'stoolmicroscopy' => [ //Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 5, //the id of the serology - check test_categories table
 							'test_type_id' => 5, //the id of the stool test - check test_types table
-							'entamoeba' => 22,
-							'giardia' => 26,
-							'cryptosporidium' => 13,
-							'isospora' => 24,
-							'cyclospora' => 3,
-							'strongyloides' => 5,
-							'shistosoma' => 15,
-							'taenia' => 16,
-							'askaris' => 18,
-							'hookworm' => 19,
-							'trichuris' => 20,
+							'entamoeba' => 'entamoeba',
+							'giardia' => 'giardia',
+							'cryptosporidium' => 'cryptosporidium',
+							'isospora' => 'isospora',
+							'cyclospora' => 'cyclospora',
+							'strongyloides' => 'strongyloides',
+							'shistosoma' => 'shistosoma',
+							'taenia' => 'taenia',
+							'askaris' => 'askaris',
+							'hookworm' => 'hookworm',
+							'trichuris' => 'trichuris',
 							//'other_parasites' => 25,
 
 						],
 						'immunology' => [ //Input the measure_id number for a test type in this section - check testtype_measure table
 							'test_category_id' => 7,
-							'cd4' => 47, 
-							'hiv_viral_load' => 53,
-							'hepb' => 30,
+							'cd4' => 'cd4', 
+							'hiv_viral_load' => 'hiv_viral_load',
+							'hepb' => 'hepb',
 						],
 						'molecular' => [
 							'test_category_id' => 2,
-							'tb_genexpert' => 131, 
-							'latent_tb' => 131,
-							'tb_lam' => 131,
+							'tb_genexpert' => 'tb_genexpert', 
+							'latent_tb' => 'latent_tb',
+							'tb_lam' => 'tb_lam',
 						],
 						'chemistry' => [//Input the measure_id for a test type in this section - check testtype_measure table
 							'test_category_id' => 6, //the id of the serology - check test_categories table
-							'urea' => 510, 
-							'calcium' => 92,
-							'potassium' => 511,
-							'albumin' => 50,
-							'total_protein' => 55,
-							'sodium' => 512,
-							'creatinine' => 513,
-							'alt' => 514,
-							'ast' => 515,
-							'protein' => 12,
-							'triglycerides' => 517,
-							'cholesterol' => 518,
-							'free_t3' => 519,
-							'free_t4' => 520,
-							'tsh' => 521,
-							'alkaline_phosphate' => 516,
-							'amylase' => 91,
-							'glucose' => 91,
-							'total_bilirubin' => 91,
-							'lipase' => 91,
-							'afp' => 91,
+							'urea' => 'urea', 
+							'calcium' => 'calcium',
+							'potassium' => 'potassium',
+							'albumin' => 'albumin',
+							'total_protein' => 'total_protein',
+							'sodium' => 'sodium',
+							'creatinine' => 'creatinine',
+							'alt' => 'alt',
+							'ast' => 'ast',
+							'protein' => 'protein',
+							'triglycerides' => 'triglycerides',
+							'cholesterol' => 'cholesterol',
+							'free_t3' => 'free_t3',
+							'free_t4' => 'free_t4',
+							'tsh' => 'tsh',
+							'alkaline_phosphate' => 'alkaline_phosphate',
+							'amylase' => 'amylase',
+							'glucose' => 'glucose',
+							'total_bilirubin' => 'total_bilirubin',
+							'lipase' => 'lipase',
+							'afp' => 'afp',
 
 						],
 						'referralTests' => [//get ids from measures table
 							'status' => 1, //the id of the serology - check test_categories table
-							'eid' => 510,
-							'hiv_viral_load' => 320, 
-							'cd4' => 510, 
+							'eid' => 'eid',
+							'hiv_viral_load' => 'hiv_viral_load', 
+							'cd4' => 'cd4', 
 							'sickle_cell_confirmation' => 92,
 							'histology' => 511,
-							'polio' => 512,
-							'sars' => 513,
-							'tb_genexpert' => 58,
-							'mdr_tb' => 515,
+							'polio' => 'polio',
+							'sars' => 'sars',
+							'tb_genexpert' => 'tb_genexpert',
+							'mdr_tb' => 'mdr_tb',
 			
 						],
 						'referred_microbiology' => [//get ids from measures table
 							'status' => 1, //the id of the serology - check test_categories table
 							'typhoid_fever' => 510, 
-							'cholera' => 92,
+							'cholera' => 'cholera',
 							'dysentry' => 60,
 							'rota_virus' => 512,
 							'meningitis' => 513,
@@ -4982,109 +4975,109 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 						],
 						'equipmentBreakdown' => [
 							'referral_reason' => 1,
-							'CD4' => 1,
-							'TB' => 2,
-							'CBC' => 4,
+							'CD4' => 'cd4',
+							'TB' => 'tb',
+							'CBC' => 'cbc',
 							'Chemistry' => 4,
 							'Microbiology' => 4,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 4,	
 						],
 						'reagent_stockout' => [
 							'referral_reason' => 2,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'supplies_stockout' => [
 							'referral_reason' => 3,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'power_outage' => [
 							'referral_reason' => 4,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'no_testing_expertise' => [
 							'referral_reason' => 5,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'required_equipment' => [
 							'referral_reason' => 1,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'confirmatory_testing' => [
 							'referral_reason' => 1,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'qa_retesting' => [
 							'referral_reason' => 1,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
 						'other_referral_reasons' => [
 							'referral_reason' => 1,
-							'CD4' => 3,
-							'TB' => 1,
-							'CBC' => 5,
+							'CD4' => 'cd4',
+							'TB' => 'tb_genexpert',
+							'CBC' => 'cbc',
 							'Chemistry' => 5,
 							'Microbiology' => 1,
-							'hiv' => 4,
-							'VDRL' => 4,
+							'hiv' => 'hiv',
+							'VDRL' => 'vdrl_rpr',
 							'Haematology' => 4,
 							'Parasitolog' => 1,	
 						],
@@ -5666,6 +5659,7 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 			\Log::info("....2.....");
 		}
 		return $test_type_ids[$lab_section];
+	  // }
 	}
 
 	private function getTestTypeInitialCounts($lab_section){

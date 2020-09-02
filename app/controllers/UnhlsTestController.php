@@ -31,6 +31,7 @@ class UnhlsTestController extends \BaseController {
 
 		$searchString = isset($input['search'])?$input['search']:'';
 		$testStatusId = isset($input['test_status'])?$input['test_status']:'';
+		// $testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
 		}else{
@@ -65,6 +66,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
@@ -81,16 +87,17 @@ class UnhlsTestController extends \BaseController {
 					->with('testSet', $tests)
 					->with('testStatus', $statuses)
 					->with('barcode', $barcode)
-					 // ->with('qrcode', $qrcode)
+					// ->with('selectedTestCategoryId', $test_categories)
+					// ->with('selectedTestCategoryId', $testCategoryId)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
 					->withInput($input);
 	}
 
-	public function qr_code()
-{
-   $qrCode = QRCode::text('Laravel QR Code Generator!')->png();
-}
+// 	public function qr_code()
+// {
+//    $qrCode = QRCode::text('Laravel QR Code Generator!')->png();
+// }
 
 	/**
 	 * Listing of Completed tests
@@ -142,6 +149,7 @@ class UnhlsTestController extends \BaseController {
 		foreach ($statuses as $key => $value) {
 			$statuses[$key] = trans("messages.$value");
 		}
+
 
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
@@ -818,7 +826,8 @@ class UnhlsTestController extends \BaseController {
 	 * @return
 	 */
 	public function enterResults($testID)
-	{
+	{	
+		$equipment_list = array_merge_maintain_keys(array('' => 'Select one'),getEquipmentAndUniqueNumber());
 		$test = UnhlsTest::find($testID);
 		// if the test being carried out requires a culture worksheet
 		if ($test->testType->isCulture()) {
@@ -826,7 +835,8 @@ class UnhlsTestController extends \BaseController {
 		}elseif ($test->testType->isGramStain()) {
 			return Redirect::route('gramstain.edit', [$test->id]);
 		}else{
-			return View::make('unhls_test.enterResults')->with('test', $test);
+			return View::make('unhls_test.enterResults')->with('equipment_list', $equipment_list)
+			->with('test', $test);
 		}
 	}
 
@@ -872,13 +882,76 @@ class UnhlsTestController extends \BaseController {
 		}
 		
 		foreach ($test->testType->measures as $measure) {
-			$testResult = UnhlsTestResult::firstOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
+			$testResult = UnhlsTestResult::updateOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
 			if ($test->testType->name == 'Gram Staining') {
 
 				$testResult->result = $results;
 				$inputName = "m_".$measure->id;
 			}else{
 				$testResult->result = Input::get('m_'.$measure->id);
+				$inputName = "m_".$measure->id;
+			}
+			$rules = array("$inputName" => 'max:255');
+
+			$validator = Validator::make(Input::all(), $rules);
+
+			if ($validator->fails()) {
+				return Redirect::back()->withErrors($validator)->withInput(Input::all());
+			} else {
+				$testResult->save();
+			}
+		}
+		if ($test->isHIV()) {
+			$test->interpretation = $test->interpreteHIVResults();
+		}else{
+			$test->interpretation = Input::get('interpretation');
+		}
+		$test->save();
+
+		//Fire of entry saved/edited event
+		Event::fire('test.saved', array($testID));
+
+		$input = Session::get('TESTS_FILTER_INPUT');
+		Session::put('fromRedirect', 'true');
+
+		// Get page
+		$url = Session::get('SOURCE_URL');
+		$urlParts = explode('&', $url);
+		if(isset($urlParts['page'])){
+			$pageParts = explode('=', $urlParts['page']);
+			$input['page'] = $pageParts[1];
+		}
+
+		// redirect
+		return Redirect::to($url)
+					->with('message', trans('messages.success-saving-results'))
+					->with('activeTest', array($test->id))
+					->withInput($input);
+	}
+
+	//Save reviewed test result
+	public function saveRevisedResults($testID)
+	{
+		$test = UnhlsTest::find($testID);
+		$test->test_status_id = UnhlsTest::COMPLETED;
+		$test->revised_by = Auth::user()->id;
+		$test->time_revised = date('Y-m-d H:i:s');
+
+		if ($test->testType->name == 'Gram Staining') {
+			$results = '';
+			foreach ($test->gramStainResults as $gramStainResult) {
+				$results = $results.$gramStainResult->gramStainRange->name.',';
+			}
+		}
+		
+		foreach ($test->testType->measures as $measure) {
+			$testResult = UnhlsTestResult::updateOrCreate(array('test_id' => $testID, 'measure_id' => $measure->id));
+			if ($test->testType->name == 'Gram Staining') {
+
+				$testResult->result = $results;
+				$inputName = "m_".$measure->id;
+			}else{
+				$testResult->revised_result = Input::get('m_'.$measure->id);
 				$inputName = "m_".$measure->id;
 			}
 			$rules = array("$inputName" => 'max:255');
@@ -950,10 +1023,12 @@ class UnhlsTestController extends \BaseController {
 		$rejectionReason = RejectionReason::all();
 		$rejection = AnalyticSpecimenRejection::all();
 		$reason = AnalyticSpecimenRejectionReason::all();
+		$barcode = Barcode::first();
 
 		return View::make('unhls_test.viewDetails')->with('test', UnhlsTest::find($testID))
 													->with('rejectionReason', $rejectionReason)
 													->with('rejection', $rejection)
+													->with('barcode', $barcode)
 													->with('reason', $reason);
 		
 	} 

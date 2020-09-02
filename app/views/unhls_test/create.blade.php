@@ -112,13 +112,11 @@
 											{{ Form::select('clinician', $clinicians, null,
 											array('class' => 'form-control','id'=>'clinician_dropdown_id')) }}
 										</div>
-										<div class="form-group">
+										<!-- <div class="form-group">
 											{{ Form::label('intern', 'Intern Doc') }}
 											{{ Form::text('intern', Input::old('intern'),
 											array('class' => 'form-control')) }}
-										
-
-										</div>
+										</div> -->
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">

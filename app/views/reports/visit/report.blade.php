@@ -41,7 +41,7 @@
 					<th>{{ trans('messages.patient-id')}}</th>
 					<td>{{ $visit->patient->patient_number}}</td>
 					<th>{{ trans('messages.age')}}</th>
-					<td>{{ $visit->patient->getAge()}}</td>
+					<td>{{ $visit->exactAge()}}</td>
 				</tr>
 				<tr>
 					<th>{{ trans('messages.patient-lab-number')}}</th>

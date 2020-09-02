@@ -1,4 +1,6 @@
 <?php
+// use \Milon\Barcode\DNS1D;
+// use \Milon\Barcode\DNS2D;
 
 class BarcodeController extends \BaseController {
 
@@ -108,6 +110,11 @@ class BarcodeController extends \BaseController {
         return Redirect::to($url)
 			->with('message', trans('messages.barcode-update-success')) ->with('activebarcode', $barcode ->id);
 	}
+
+// 	public function barcode()
+// {
+//     return View::make('barcode.barcode');
+// }
 
 
 	/**

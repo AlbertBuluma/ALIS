@@ -100,7 +100,7 @@ class UnhlsPatient extends Eloquent
 					$age=$interval->y." years ";
 
 					$seconds = ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + ($interval->s);
-				    $age = round($seconds/(365*24*60*60))." years ";
+				    $age = round($seconds/(365*24*60*60), 1)." years ";
 				}
 				
 				break;

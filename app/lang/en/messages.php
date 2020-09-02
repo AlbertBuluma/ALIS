@@ -471,6 +471,8 @@ return array(
     'positive'  =>  'Positive',
     'negative'  =>  'Negative',
     'prevalence-rates-label'    =>  'Cummulative Percentage (%)',
+    'tat-rates-label'    =>  'Percentage (%)',
+    'tat-label'    =>  'Total Number of tests',
     'no-match'  =>  'Your filter did not match any records.',
     'check-date-range'  =>  'Please check your dates range and try again!',
     'time-in-years' =>  'Time(yrs)',

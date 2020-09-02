@@ -16,7 +16,6 @@ class ReportController extends \BaseController {
 		return View::make('reports.index');
 	}
 
-
 	public function loadPatients()
 	{
 		//$search = Input::get('search');
@@ -48,6 +47,101 @@ class ReportController extends \BaseController {
 		return View::make('reports.patient.merged')->with('patients', $patients)->withInput(Input::all());
 	}
 
+
+	public function viewRevisedPatientReport($id, $visit = null,$testId = null){
+		$from = Input::get('start');
+		$to = Input::get('end');
+		$pending = Input::get('pending');
+		$date = date('Y-m-d');
+		$error = '';
+		$visitId = Input::get('visit_id');
+		//	Check checkbox if checked and assign the 'checked' value
+		if (Input::get('tests') === '1') {
+			$pending='checked';
+		}
+		//	Query to get tests of a particular patient
+		if (($visit || $visitId) && $id && $testId){
+			$tests = UnhlsTest::where('id', '=', $testId);
+		}
+		else if(($visit || $visitId) && $id){
+			$tests = UnhlsTest::where('visit_id', '=', $visit?$visit:$visitId);
+		}
+		else{
+			$tests = UnhlsTest::join('unhls_visits', 'unhls_visits.id', '=', 'unhls_tests.visit_id')
+							->where('patient_id', '=', $id);
+		}
+		//	Begin filters - include/exclude pending tests
+		if($pending){
+			$tests=$tests->where('unhls_tests.test_status_id', '!=', UnhlsTest::SPECIMEN_NOT_RECEIVED);
+		}
+		else{
+			$tests = $tests->whereIn('unhls_tests.test_status_id', [UnhlsTest::APPROVED]);
+		}
+		//	Date filters
+		if($from||$to){
+
+			if(!$to) $to = $date;
+
+			if(strtotime($from)>strtotime($to)||strtotime($from)>strtotime($date)||strtotime($to)>strtotime($date)){
+					$error = trans('messages.check-date-range');
+			}
+			else
+			{
+				$toPlusOne = date_add(new DateTime($to), date_interval_create_from_date_string('1 day'));
+				$tests=$tests->whereBetween('time_created', array($from, $toPlusOne->format('Y-m-d H:i:s')));
+			}
+		}
+		//	Get tests collection
+		$tests = $tests->get(array('unhls_tests.*'));
+
+
+		//	Get patient details
+		$patient = UnhlsPatient::find($id);
+		//	Check if tests are accredited
+		$accredited = $this->accredited($tests);
+		$verified = array();
+		foreach ($tests as $test) {
+			if($test->isVerified())
+				array_push($verified, $test->id);
+			// $qrcode = QRCode::text($test->id)->png();
+			else
+				continue;
+		}
+         
+
+		// adhoc config decision
+		//$template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
+		$template = "reports.patient.entebbe_iso";
+
+		$content = View::make($template)
+			->with('patient', $patient)
+			->with('tests', $tests)
+			->with('pending', $pending)
+			->with('error', $error)
+			->with('visit', $visit)
+			// ->with('qrcode', $qrcode)
+			->with('accredited', $accredited)
+			->with('verified', $verified)
+			->withInput(Input::all());
+
+			ob_end_clean();
+
+		$test_request_information  = array(
+			'tests' => $tests, 
+			'patient'=> $patient
+			);
+		$pdf = new RevisedReportPdf;
+		$pdf->setTestRequestInformation($test_request_information);
+
+		$pdf->SetAutoPageBreak(TRUE, 15);
+		$pdf->AddPage();
+		$pdf->SetFont('times','','11');
+		$pdf->writeHTML($content, 'true', 'false', 'false', 'false', '');
+
+		return $pdf->output('report.pdf');
+
+
+	}
 
 	public function viewFinalPatientReport($id, $visit = null,$testId = null){
 		$from = Input::get('start');
@@ -104,7 +198,6 @@ class ReportController extends \BaseController {
 		foreach ($tests as $test) {
 			if($test->isVerified())
 				array_push($verified, $test->id);
-			$qrcode = QRCode::text($test->id)->png();
 			else
 				continue;
 		}
@@ -120,7 +213,6 @@ class ReportController extends \BaseController {
 			->with('pending', $pending)
 			->with('error', $error)
 			->with('visit', $visit)
-			->with('qrcode', $qrcode)
 			->with('accredited', $accredited)
 			->with('verified', $verified)
 			->withInput(Input::all());
@@ -329,16 +421,6 @@ class ReportController extends \BaseController {
 			
 			->withInput(Input::all());
 
-			/*$content = View::make($template)
-			->with('patient', $patient)
-			->with('tests', $tests)
-			->with('pending', $pending)
-			->with('error', $error)
-			->with('visit', $visit)
-			->with('accredited', $accredited)
-			->with('verified', $verified)
-			->withInput(Input::all());*/
-
 		ob_end_clean();
 		
 		$pdf = new Mypdf;
@@ -467,7 +549,7 @@ class ReportController extends \BaseController {
 		return View::make('reports.patient.visits')->with('patient', $patient)
 		->with('visits', $visits)->withInput(Input::all());
 
-	}
+	} 
 
 	public function recallPatientVisitReport($id){
 		$tests = UnhlsTest::searchByVisit( $id);
@@ -756,11 +838,11 @@ class ReportController extends \BaseController {
 			}
 			else if($pendingOrAll=='all'){
 				$tests = $tests->whereIn('test_status_id',
-					[UnhlsTest::PENDING, UnhlsTest::STARTED, UnhlsTest::COMPLETED, UnhlsTest::VERIFIED]);
+					[UnhlsTest::PENDING, UnhlsTest::STARTED, UnhlsTest::COMPLETED, UnhlsTest::VERIFIED, UnhlsTest::APPROVED]);
 			}
 			//For Complete tests and the default.
 			else{
-				$tests = $tests->whereIn('test_status_id', [UnhlsTest::COMPLETED, UnhlsTest::VERIFIED]);
+				$tests = $tests->whereIn('test_status_id', [UnhlsTest::COMPLETED, UnhlsTest::VERIFIED, UnhlsTest::APPROVED]);
 			}
 			/*Get collection of tests*/
 			/*Filter by date*/
@@ -905,10 +987,10 @@ class ReportController extends \BaseController {
 		}else{
 			$testTypes->add(TestType::find($testTypeID));
 		}
- 
+
 		$options = '{
 			"chart": {
-				"type": "spline"
+				"type": "column"
 			},
 			"title": {
 				"text":"'.trans('messages.positivity-rates').'"
@@ -1105,7 +1187,7 @@ class ReportController extends \BaseController {
 			$ungroupedTests = array();
 			foreach (TestType::all() as $testType) {
 				$pending = $testType->countPerStatus([UnhlsTest::PENDING, UnhlsTest::STARTED], $from, $toPlusOne->format('Y-m-d H:i:s'));
-				$complete = $testType->countPerStatus([UnhlsTest::COMPLETED, UnhlsTest::VERIFIED], $from, $toPlusOne->format('Y-m-d H:i:s'));
+				$complete = $testType->countPerStatus([UnhlsTest::COMPLETED, UnhlsTest::VERIFIED, UnhlsTest::APPROVED], $from, $toPlusOne->format('Y-m-d H:i:s'));
 				$ungroupedTests[$testType->id] = ["complete"=>$complete, "pending"=>$pending];
 			}
 
@@ -1364,52 +1446,7 @@ class ReportController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function turnaroundTime()
-	{
-		$today = date('Y-m-d');
-		$from = Input::get('start');
-		$to = Input::get('end');
-		if(!$to){
-			$to=$today;
-		}
-		$testCategory = Input::get('section_id');
-		$testType = Input::get('test_type');
-		$labSections = TestCategory::lists('name', 'id');
-		$interval = Input::get('period');
-		$error = null;
-		$accredited = array();
-
-		if($testCategory)
-			$testTypes = TestCategory::find($testCategory)->testTypes->lists('name', 'id');
-		else
-			$testTypes = array(""=>"");
-
-		if($from||$to){
-			if(strtotime($from)>strtotime($to)||strtotime($from)>strtotime($today)||strtotime($to)>strtotime($today)){
-					$error = trans('messages.check-date-range');
-			}
-			else
-			{
-				$toPlusOne = date_add(new DateTime($to), date_interval_create_from_date_string('1 day'));
-				Session::flash('fine', '');
-			}
-		}
-
-		$resultset = self::getTatStats($from, $to, $testCategory, $testType, $interval);
-		//dd($interval);
-		return View::make('reports.tat.index')
-					->with('labSections', $labSections)
-					->with('testTypes', $testTypes)
-					->with('resultset', $resultset)
-					->with('testCategory', $testCategory)
-					->with('testType', $testType)
-					->with('interval', $interval)
-					->with('error', $error)
-					->with('accredited', $accredited)
-					->withInput(Input::all());
-	}
-
-	public function turnaroundTimeTestype()
+	public function turnaroundTime2()
 	{
 		$today = date('Y-m-d');
 		$from = Input::get('start');
@@ -1454,6 +1491,177 @@ class ReportController extends \BaseController {
 					->withInput(Input::all());
 	}
 
+	
+	public function turnaroundTime()
+	{
+		$from = Input::get('start');
+		$to = Input::get('end');
+		$today = date('Y-m-d');
+		$year = date('Y');
+		$testTypeID = Input::get('test_type');
+
+		//	Apply filters if any
+		if(Input::has('filter')){
+
+			if(!$to) $to=$today;
+
+			if(strtotime($from)>strtotime($to)||strtotime($from)>strtotime($today)||strtotime($to)>strtotime($today)){
+				Session::flash('message', trans('messages.check-date-range'));
+			}
+
+			$months = json_decode(self::getMonths($from, $to));
+			$data = TestType::getTurnaroundCounts($from, $to, $testTypeID);
+			$chart = self::getturnaroundTimeChart($testTypeID);
+		}
+		else
+		{
+			// Get all tests for the current year
+			$test = UnhlsTest::where('time_created', 'LIKE', date('Y').'%');
+			$periodStart = $test->min('time_created'); //Get the minimum date
+			$periodEnd = $test->max('time_created'); //Get the maximum date
+			$data = TestType::getTurnaroundCounts($periodStart, $periodEnd);
+			$chart = self::getturnaroundTimeChart();
+		}
+		if(Input::has('word')){
+				$date = date("Ymdhi");
+				$fileName = "testtype_tat_".$date.".doc";
+				$headers = array(
+					"Content-type"=>"text/html",
+					"Content-Disposition"=>"attachment;Filename=".$fileName
+				);
+				$content = View::make('reports.tat.exportTAT')
+								->with('data', $data)
+								->withInput(Input::all());
+				return Response::make($content,200, $headers);
+			}
+			else{
+				return View::make('reports.tat.index')
+						->with('data', $data)
+						->with('chart', $chart)
+						->withInput(Input::all());
+				}
+		}
+
+public static function getturnaroundTimeChart($testTypeID = 0){
+		$from = Input::get('start');
+		$to = Input::get('end');
+		$months = json_decode(self::getMonths($from, $to));
+		$testTypes = new Illuminate\Database\Eloquent\Collection();
+
+		if($testTypeID == 0){
+
+			$testTypes = TestType::all();
+		}else{
+			$testTypes->add(TestType::find($testTypeID));
+		}
+
+		$options = '{
+			"chart": {
+				"type": "column"
+			},
+			"title": {
+				"text":"'.trans('messages.turnaround-time').'"
+			},
+			"subtitle": {
+				"text":';
+				if($from==$to)
+					$options.='"'.trans('messages.for-the-year').' '.date('Y').'"';
+				else
+					$options.='"'.trans('messages.from').' '.$from.' '.trans('messages.to').' '.$to.'"';
+			$options.='},
+			"credits": {
+				"enabled": false
+			},
+			"navigation": {
+				"buttonOptions": {
+					"align": "right"
+				}
+			},
+			"plotOptions": {
+        "column": {
+            
+            "dataLabels": {
+                "enabled": true
+            }
+        }
+    },
+			"series": [';
+				$counts = count($testTypes);
+
+					foreach ($testTypes as $testType) {
+						$options.= '{
+							"name": "'.$testType->name.'","data": [';
+								$counter = count($months);
+								foreach ($months as $month) {
+								$data = $testType->getTurnaroundCount($month->annum, $month->months);
+									if($data->isEmpty()){
+										$options.= '0.00';
+										if($counter==1)
+											$options.='';
+										else
+											$options.=',';
+									}
+									else{
+										foreach ($data as $datum) {
+											$options.= $datum->total;
+
+											if($counter==1)
+												$options.='';
+											else
+												$options.=',';
+										}
+									}
+								$counter--;
+							}
+							$options.=']';
+						if($counts==1)
+							$options.='}';
+						else
+							$options.='},';
+						$counts--;
+					}
+			$options.='],
+			"xAxis": {
+				"categories": [';
+				$count = count($months);
+					foreach ($months as $month) {
+						$options.= '"'.$month->label." ".$month->annum;
+						if($count==1)
+							$options.='" ';
+						else
+							$options.='" ,';
+						$count--;
+					}
+				$options.=']
+			},
+			
+			"yAxis": {
+				"title": {
+					"text": "'.trans('messages.tat-label').'"
+				},
+				"stackLabels": {
+            "enabled": false,
+            
+           },
+				"min": "0",
+				
+			},
+			"exporting": {
+				"buttons":{
+					"contextButtons": {
+						"symbol": "url(../../../i/button_download.png)",
+						"symbolStrokeWidth": "1",
+						"symbolFill": "#a4edba",
+						"symbolStroke": "#330033"
+
+
+					}
+				}
+
+			}
+		}';
+	return $options;
+	}
 	//	Begin infection reports functions
 	/**
 	 * Display a table containing all infection statistics.
@@ -2377,4 +2585,29 @@ class ReportController extends \BaseController {
 			});
 		})->export('xls');
 	}
+
+	public function quaterly_report()
+	{
+		return View::make('reports.quaterlyreport');
+	}
+
+	public function bb_register()
+	{
+		return View::make('reports.registers.biosafety_biosecurity');
+	}
+
+	public function equipment_maintenance_register()
+	{
+		return View::make('reports.registers.equipment_maintenance');
+	}
+
+	public function vl_tb_register()
+	{
+		return View::make('reports.registers.vl_tb_register');
+	}
+
+	// public function equipment_maintenance_register()
+	// {
+	// 	return View::make('reports.registers.equipment_maintenance');
+	// }
 }

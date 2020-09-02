@@ -197,6 +197,8 @@
 								@elseif(!empty($test->clinician->phone))
 		                           {{$test->clinician->phone }}
 								@endif
+
+							<!--  -->
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -220,7 +222,7 @@
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.age")}}</strong></p></div>
 										<div class="col-md-9">
-											{{$test->visit->patient->getAge()}}</div></div>
+											{{$test->visit->exactAge('M')}}</div></div>
 									<div class="row">
 										<div class="col-md-3">
 											<p><strong>{{trans("messages.gender")}}</strong></p></div>
@@ -348,11 +350,14 @@
 											<p><strong>{{ Measure::find($result->measure_id)->name }}</strong></p>
 										</div>
 										<div class="col-md-3">
-											{{$result->result}}	
+											@if($result->revised_result!=null)
+											{{$result->revised_result}} (Revised result)
+											@else
+											{{$result->result}}
+											@endif
 										</div>
 										<div class="col-md-5">
-	        								{{ Measure::getRange($test->visit->patient, $result->measure_id) }}
-											{{ Measure::find($result->measure_id)->unit }}
+	        								
 										</div>
 									</div>
 								@endforeach

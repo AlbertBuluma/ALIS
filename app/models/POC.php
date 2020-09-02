@@ -121,20 +121,21 @@ class POC extends Eloquent
     *
     * @return string
     */
-    public function getUlin(){
-    	$facilityCode ='';
-    	$facilityCode = $this->getFacilityCode();
-    	$registrationDate = strtotime($this->created_at);
-    	$yearMonth = date('ym', $registrationDate);
+        public function getUlin(){
+
+		$registrationDate = strtotime($this->created_at);
+    	$year = date('y', $registrationDate);
+    	$Month = date('m', $registrationDate);
+    	$Day = date('d', $registrationDate);
     	$autoNum = DB::table('uuids')->max('id')+1;
-        $name = preg_split("/\s+/", $this->name);
-        $initials = null;
-        $ulin ='';
+        $name = preg_split("/\s+/", trim($this->infant_name));
+			$initials = null;
 
-    	foreach ($name as $n){
-    		$initials .= $n[0];
+			foreach ($name as $n){
+				$initials .= $n[0];
 
-    	}
-    	return $facilityCode.'/'.$yearMonth.'/'.$autoNum.'/'.$initials;
+			}
+
+    	return $autoNum.'/'.$Month.'/'.$year.'/'.$initials;
     }
 }

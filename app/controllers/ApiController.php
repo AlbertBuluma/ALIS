@@ -13,9 +13,22 @@ class ApiController extends \BaseController {
 		
 		$facilities = DB::table('unhls_facilities')->select('id', 'name')->where('district_id', $id)->get(); 
 
-   		return Response::json($facilities);
-   	}
+    public static function fetchAllTableIDs()
+    {
+        $table_names = $data = [];
+        $tables = DB::select('show tables');
+        foreach($tables as $table){
+            $table_names[] = $table->Tables_in_alis;
+        }
+        foreach ($table_names as $tab_name){
+            $data[$tab_name] = DB::table($tab_name)
+                                ->select('id')
+                                ->orderBy('id', 'desc')
+                                ->pluck('id');
+        }
 
+        return Response::json($data);
+    }
 
 	/**
 	 * Display a listing of the resource.

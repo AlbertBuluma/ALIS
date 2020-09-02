@@ -1277,3 +1277,6 @@ Route::get('/latest_record_ids', function(){
 });
 
 
+// Fetch latest 10 records from table
+Route::get('/tables/{table}', 'ApiController@fetchTableRecords');
+

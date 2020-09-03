@@ -7,14 +7,48 @@ class ApiController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function facility()
-	{
-		$id = Input::get('districtId');
-		
-		$facilities = DB::table('unhls_facilities')->select('id', 'name')->where('district_id', $id)->get(); 
+    public function facility()
+    {
+        $id = Input::get('districtId');
 
+//		$facilities = DB::table('unhls_facilities')->select('id', 'name')->where('district_id', $id)->get();
+//		$facilities = DB::table('unhls_facilities')->select('*')->where('district_id', 1)->get();
+//        $facilities['facility_id'] = Config::get('constants.WAREHOUSE_FACILITY_ID');
+//        $patients = UnhlsTest::where('time_created', '<', '2019-01-01')
+//            ->get();
+//        dd($patients);
+        $patients = DB::table('unhls_patients')->limit(5)->get();
+
+//        $tab = $data = [];
+//        $tables = DB::select('show tables');
+//        foreach($tables as $table){
+//            $tab[] = $table->Tables_in_alis;
+//        }
+//        foreach ($tab as $tab_data){
+//            $data[$tab_data] = DB::table($tab_data)->limit(5)->get();
+
+
+//            $data[$tab_data] = DB::table($tab_data)
+//                                ->select('id')
+//                                ->orderBy('id', 'desc')
+//                                ->pluck('id');
+
+//            $data[$tab_data] = DB::table($tab_data)
+//                                ->where('created_at', '<', '2019-11-01')
+//                                ->get();
+//        }
+
+        return Response::json($patients);
+    }
+
+    /**
+     * Fetch IDs of latest record from all tables.
+     *
+     * @return Response
+     */
     public static function fetchAllTableIDs()
     {
+        //TODO Add id column for migrations, instrument_types and tokens tables
         $table_names = $data = [];
         $tables = DB::select('show tables');
         foreach($tables as $table){

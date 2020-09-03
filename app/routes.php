@@ -1280,3 +1280,8 @@ Route::post('warehouse_ids', 'ApiController@warehouseIds');
 // Fetch latest 10 records from table
 Route::get('/tables/{table}', 'ApiController@fetchTableRecords');
 
+// Fetch Isolated organisms
+Route::get('/isolated_organisms', 'ApiController@fetchIsolatedOrganisms');
+
+// Fetch UNHLS results
+Route::get('/unhls_results', 'ApiController@fetchUnhlsResults');

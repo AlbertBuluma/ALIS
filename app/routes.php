@@ -1285,3 +1285,9 @@ Route::get('/isolated_organisms', 'ApiController@fetchIsolatedOrganisms');
 
 // Fetch UNHLS results
 Route::get('/unhls_results', 'ApiController@fetchUnhlsResults');
+
+//Fetch Specimen rejections
+Route::get('/specimen_rejections', 'ApiController@specimenRejections');
+
+//Fetch measure ranges
+Route::get('/measure_ranges', 'ApiController@measureRanges');

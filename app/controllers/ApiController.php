@@ -107,9 +107,11 @@ class ApiController extends \BaseController {
                 $join->on('drug_susceptibility.drug_id', '=', 'drugs.id');
             })
             ->where('isolated_organisms.organism_id', '!=', 'NULL')
-            ->select('isolated_organisms.test_id', 'isolated_organisms.organism_id', 'organisms.name',
-                'drug_susceptibility.zone_diameter', 'drugs.name', 'drugs.description',
-                'drug_susceptibility_measures.symbol', 'drug_susceptibility_measures.interpretation')
+            ->select('isolated_organisms.test_id AS test_id', 'isolated_organisms.organism_id', 'organisms.name AS organism_name',
+                'organisms.description AS orgnism_description', 'drug_susceptibility.zone_diameter AS drug_susceptibility_zone_diameter',
+                'drugs.name AS drug_name', 'drugs.description AS drug_description',
+                'drug_susceptibility_measures.symbol AS drug_susceptibility_symbol',
+                'drug_susceptibility_measures.interpretation AS drug_susceptibility_interpretation')
             ->get();
 
         return Response::json($results, 200);
@@ -131,7 +133,8 @@ class ApiController extends \BaseController {
                     ->leftjoin('measure_types', function($join){
                         $join->on('measures.measure_type_id', '=', 'measure_types.id');
                     })
-                    ->select('unhls_test_results.id', 'unhls_test_results.measure_id', 'unhls_test_results.result', 'measures.name', 'measure_types.name')
+                    ->select('unhls_test_results.id AS result_id', 'unhls_test_results.measure_id AS result_measure_id',
+                        'unhls_test_results.result AS result', 'measures.name AS measure', 'measure_types.name AS measure_type')
                     ->get();
 
         //TODO measure_types.name to select column results

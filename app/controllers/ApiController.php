@@ -112,7 +112,7 @@ class ApiController extends \BaseController {
                 'drugs.name AS drug_name', 'drugs.description AS drug_description',
                 'drug_susceptibility_measures.symbol AS drug_susceptibility_symbol',
                 'drug_susceptibility_measures.interpretation AS drug_susceptibility_interpretation')
-            ->get();
+            ->paginate(10);
 
         return Response::json($results, 200);
     }
@@ -134,8 +134,10 @@ class ApiController extends \BaseController {
                         $join->on('measures.measure_type_id', '=', 'measure_types.id');
                     })
                     ->select('unhls_test_results.id AS result_id', 'unhls_test_results.measure_id AS result_measure_id',
-                        'unhls_test_results.result AS result', 'measures.name AS measure', 'measure_types.name AS measure_type')
-                    ->get();
+                        'unhls_test_results.sample_id AS sample_id',
+                        'unhls_test_results.result AS result', 'measures.id AS measure_id' ,'measures.name AS measure',
+                        'measure_types.name AS measure_type', 'measures.unit AS measure_unit', 'measures.description AS measure_description')
+                    ->paginate(10);
 
         //TODO measure_types.name to select column results
 
@@ -161,7 +163,7 @@ class ApiController extends \BaseController {
                     ->select('analytic_specimen_rejections.test_id', 'analytic_specimen_rejection_reasons.specimen_id',
                             'analytic_specimen_rejection_reasons.rejection_id', 'analytic_specimen_rejection_reasons.reason_id',
                             'rejection_reasons.reason')
-                    ->get();
+                    ->paginate(10);
 
         return Response::json($results, 200);
     }
@@ -171,7 +173,7 @@ class ApiController extends \BaseController {
     {
         $results = DB::table('measure_ranges')
                         ->select('measure_id', 'alphanumeric', 'interpretation')
-                        ->get();
+                        ->paginate(10);
 
         return Response::json($results, 200);
 

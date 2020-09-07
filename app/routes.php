@@ -1271,6 +1271,7 @@ Route::group(array("before" => "auth"), function()
 });
 
 
+// DATA WARE HOUSE API ENDPOINTS
 // Fetch ID of most recent record from tables
 Route::get('/latest_record_ids', 'ApiController@fetchAllTableIDs');
 
@@ -1282,6 +1283,9 @@ Route::get('/tables/{table}', 'ApiController@fetchTableRecords');
 
 // Fetch Isolated organisms
 Route::get('/isolated_organisms', 'ApiController@fetchIsolatedOrganisms');
+
+//Fetch unhls patients
+Route::get('/unhls_patients', 'ApiController@unhlsPatients');
 
 // Fetch UNHLS results
 Route::get('/unhls_results', 'ApiController@fetchUnhlsResults');

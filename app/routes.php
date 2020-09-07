@@ -1295,3 +1295,9 @@ Route::get('/specimen_rejections', 'ApiController@specimenRejections');
 
 //Fetch measure ranges
 Route::get('/measure_ranges', 'ApiController@measureRanges');
+
+//Fetch patient Visit details
+Route::get('patient_visit', 'ApiController@unhlsVisits');
+
+//Fetch UNHLS test data
+Route::get('unhls_tests', 'ApiController@unhlsTests');

@@ -85,6 +85,11 @@ class ApiController extends \BaseController {
     }
 
 
+    public static function unhlsPatients()
+    {
+
+    }
+
     /**
      * Display a listing of the fetch Isolated Organisms.
      *
@@ -179,6 +184,59 @@ class ApiController extends \BaseController {
 
     }
 
+    /**
+     * Display a listing of UNHLS Patient visits.
+     *
+     * @return Response
+     */
+    public static function unhlsVisits()
+    {
+        $results = DB::table('unhls_patients')
+                    ->leftJoin('micro_patients_details', function ($join){
+                        $join->on('unhls_patients.id', '=', 'micro_patients_details.patient_id');
+                    })
+                    ->leftJoin('unhls_visits', function($join){
+                        $join->on('unhls_patients.id', '=', 'unhls_visits.patient_id');
+                    })
+                    ->leftJoin('wards', function($join){
+                        $join->on('unhls_visits.ward_id', '=', 'wards.id');
+                    })
+                    ->select('unhls_patients.*', 'unhls_visits.*', 'wards.*')
+                    ->paginate(10);
+
+        return Response::json($results, 200);
+
+    }
+
+
+
+    /**
+     * Display a listing of UNHLS Tests.
+     *
+     * @return Response
+     */
+    public static function unhlsTests()
+    {
+        $results = DB::table('unhls_tests')
+                    ->leftJoin('test_types', function($join){
+                        $join->on('unhls_tests.test_type_id', '=', 'test_types.id');
+                    })
+                    ->leftJoin('test_categories', function($join){
+                        $join->on('test_categories.id', '=', 'test_types.test_category_id');
+                    })
+                    ->leftJoin('test_statuses', function($join){
+                        $join->on('unhls_tests.test_status_id', '=', 'test_statuses.id');
+                    })
+                    ->leftJoin('test_phases', function($join){
+                        $join->on('test_statuses.test_phase_id', '=', 'test_phases.id');
+                    })
+                    ->select('unhls_tests.*', 'test_types.*', 'test_categories.*', 'test_statuses.*',
+                            'test_phases.*')
+                    ->paginate(10);
+
+        return Response::json($results, 200);
+
+    }
 	/**
 	 * Display a listing of the resource.
 	 *

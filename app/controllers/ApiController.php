@@ -146,10 +146,15 @@ class ApiController extends \BaseController {
                     ->leftjoin('measure_types', function($join){
                         $join->on('measures.measure_type_id', '=', 'measure_types.id');
                     })
-                    ->select('unhls_test_results.id AS result_id', 'unhls_test_results.measure_id AS result_measure_id',
-                        'unhls_test_results.sample_id AS sample_id',
-                        'unhls_test_results.result AS result', 'measures.id AS measure_id' ,'measures.name AS measure',
-                        'measure_types.name AS measure_type', 'measures.unit AS measure_unit', 'measures.description AS measure_description')
+                    ->select('unhls_test_results.id AS unhlsTestResultsId', 'unhls_test_results.test_id AS unhlsTestResultsTestId',
+                        'unhls_test_results.measure_id AS unhlsTestResultsMeasureId', 'unhls_test_results.result AS unhlsTestResultsResult',
+                        'unhls_test_results.time_entered AS timeEntered', 'unhls_test_results.sample_id AS sampleId', 'unhls_test_results.revised_result AS revisedResult',
+                        'unhls_test_results.revised_by AS revisedBy', 'unhls_test_results.revised_by2 AS revisedBy2', 'unhls_test_results.time_revised AS timeRevised',
+                        'measures.id AS measuresId' ,'measures.measure_type_id AS measuresMeasureTypeId', 'measures.name AS measuresName',
+                        'measures.unit AS unit', 'measures.description AS measuresDescription', 'measures.created_at AS measuresCreatedAt',
+                        'measures.updated_at AS measuresUpdatedAt', 'measures.deleted_at AS measuresDeletedAt',
+                        'measure_types.id AS measureTypesId', 'measure_types.name AS measureTypesName', 'measure_types.deleted_at AS measureTypesDeletedAt',
+                        'measure_types.created_at AS measureTypesCreatedAt', 'measure_types.updated_at AS measureTypesUpdatedAt')
                     ->paginate(10);
 
         //TODO measure_types.name to select column results

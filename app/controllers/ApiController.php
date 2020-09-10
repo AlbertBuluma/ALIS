@@ -209,19 +209,49 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function unhlsVisits()
+    public static function unhlsVisits($id)
     {
-        $results = DB::table('unhls_patients')
-                    ->leftJoin('micro_patients_details', function ($join){
-                        $join->on('unhls_patients.id', '=', 'micro_patients_details.patient_id');
+        $results = DB::table('unhls_patients AS up')
+                    ->where('up.id', '=', $id)
+                    ->leftJoin('micro_patients_details AS mp', function ($join){
+                        $join->on('up.id', '=', 'mp.patient_id');
                     })
-                    ->leftJoin('unhls_visits', function($join){
-                        $join->on('unhls_patients.id', '=', 'unhls_visits.patient_id');
+                    ->leftJoin('unhls_visits AS uv', function($join){
+                        $join->on('up.id', '=', 'uv.patient_id');
                     })
-                    ->leftJoin('wards', function($join){
-                        $join->on('unhls_visits.ward_id', '=', 'wards.id');
+                    ->leftJoin('unhls_districts AS ud', function($join){
+                        $join->on('up.district_residence', '=', 'ud.id');
                     })
-                    ->select('unhls_patients.*', 'unhls_visits.*', 'wards.*')
+                    ->leftJoin('wards AS w', function($join){
+                        $join->on('uv.ward_id', '=', 'w.id');
+                    })
+                    ->leftJoin('ward_type AS wt', function($join){
+                        $join->on('w.ward_type_id', '=', 'wt.id');
+                    })
+                    ->select('up.id AS unhlsPatientsId', 'up.patient_number AS patientNumber', 'up.ulin AS ulin',
+                            'up.nin AS nin', 'up.name AS name', 'up.dob as dob', 'up.age AS age','up.gender AS gender', 'up.nationality AS nationality',
+                            'up.email AS email', 'up.address AS address', 'up.village_residence AS villageResidence','up.district_residence AS districtResidence',
+                            'up.village_workplace AS villageWorkplace', 'up.phone_number AS phoneNumber', 'up.occupation AS occupation',
+                            'up.external_patient_number AS externalPatientNumber', 'up.created_by AS unhlsPatientsCreatedBy',
+                            'up.deleted_at AS unhlsPatientsDeletedAt', 'up.created_at AS unhlsPatientsCreatedAt',
+                            'up.updated_at AS unhlsPatientsUpdatedAt', 'up.is_micro AS isMicro',
+                            'mp.id AS microPatientsDetailsId', 'mp.patient_id AS patientId', 'mp.sub_county_residence AS subCountyResidence',
+                            'mp.sub_county_workplace AS subCountyWorkplace', 'mp.name_next_kin AS nameNextKin', 'mp.contact_next_kin AS contactNextKin',
+                            'mp.residence_next_kin AS residenceNextKin', 'mp.admission_date AS admissionDate', 'mp.transfered AS transfered',
+                            'mp.facility_transfered AS facilityTransfered', 'mp.clinical_notes AS clinicalNotes',
+                            'mp.days_on_antibiotic AS daysOnAntibiotic', 'mp.requested_by AS requestedBy', 'mp.clinician_contact AS clinicianContact',
+                            'mp.deleted_at AS microPatientsDetailsDeletedAt', 'mp.created_at AS microPatientsDetailsCreatedAt',
+                            'mp.updated_at AS microPatientsDetailsUpdatedAt',
+                            'ud.id AS unhlsDistrictsId', 'ud.name AS unhlsDistrictsName', 'ud.created_at AS unhlsDistrictsCreatedAt',
+                            'ud.updated_at AS unhlsDistrictsUpdatedAt',
+                            'uv.id AS unhlsVisitsid', 'uv.patient_id AS unhlsVisitspatientId', 'uv.visit_type AS visitType',
+                            'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
+                            'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitscreatedAt',
+                            'uv.updated_at AS unhlsVisitsupdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
+                            'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
+                            'uv.on_antibiotics AS onAntibiotics',
+                            'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
+                            'wt.id AS wardTypeId', 'wt.name AS wardTypeName')
                     ->paginate(10);
 
         return Response::json($results, 200);

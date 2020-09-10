@@ -267,21 +267,51 @@ class ApiController extends \BaseController {
      */
     public static function unhlsTests()
     {
-        $results = DB::table('unhls_tests')
-                    ->leftJoin('test_types', function($join){
-                        $join->on('unhls_tests.test_type_id', '=', 'test_types.id');
+        $results = DB::table('unhls_tests AS ut')
+                    ->leftJoin('test_types AS tt', function($join){
+                        $join->on('ut.test_type_id', '=', 'tt.id');
                     })
-                    ->leftJoin('test_categories', function($join){
-                        $join->on('test_categories.id', '=', 'test_types.test_category_id');
+                    ->leftJoin('test_categories AS tc', function($join){
+                        $join->on('tc.id', '=', 'tt.test_category_id');
                     })
-                    ->leftJoin('test_statuses', function($join){
-                        $join->on('unhls_tests.test_status_id', '=', 'test_statuses.id');
+                    ->leftJoin('test_statuses AS ts', function($join){
+                        $join->on('ut.test_status_id', '=', 'ts.id');
                     })
-                    ->leftJoin('test_phases', function($join){
-                        $join->on('test_statuses.test_phase_id', '=', 'test_phases.id');
+                    ->leftJoin('test_phases AS tp', function($join){
+                        $join->on('ts.test_phase_id', '=', 'tp.id');
                     })
-                    ->select('unhls_tests.*', 'test_types.*', 'test_categories.*', 'test_statuses.*',
-                            'test_phases.*')
+                    ->leftJoin('specimens AS sp', function($join){
+                        $join->on('ut.specimen_id', '=', 'sp.id');
+                    })
+                    ->leftJoin('specimen_types AS spt', function($join){
+                        $join->on('sp.specimen_type_id', '=', 'spt.id');
+                    })
+                    ->leftJoin('specimen_statuses AS sps', function($join){
+                        $join->on('sps.id', '=', 'sp.specimen_status_id');
+                    })
+                    ->select('ut.id AS unhlsTestsId', 'ut.visit_id AS unhlsTestsVisitId','ut.urgency_id AS urgencyId',
+                        'ut.test_type_id AS testTypeId', 'ut.specimen_id AS unhlsTestsSpecimenId', 'ut.interpretation AS interpretation',
+                        'ut.test_status_id AS testStatusId', 'ut.created_by AS unhlsTestsCreatedBy', 'ut.tested_by AS unhlsTestsTestedBy',
+                        'ut.verified_by AS unhlsTestsVerifiedBy', 'ut.requested_by AS unhlsTestsRequestedBy',
+                        'ut.clinician_id AS unhlsTestsClinicianId', 'ut.purpose AS purpose', 'ut.time_created AS timeCreated',
+                        'ut.time_started AS timeStarted', 'ut.time_completed AS timeCompleted', 'ut.time_verified AS timeVerified',
+                        'ut.time_sent AS timeSent', 'ut.external_id AS externalId', 'ut.instrument AS instrument',
+                        'ut.approved_by AS timeApproved', 'ut.revised_by AS unhlsTestsRevisedBy', 'ut.time_revised AS timeRevised',
+                        'tt.id AS testTypesId', 'tt.name AS testTypesName', 'tt.description AS testTypesDescription',
+                        'tt.test_category_id AS testTypesTestCategoryId', 'tt.targetTAT AS targetTAT', 'tt.targetTAT_unit AS targetTATunit',
+                        'tt.orderable_test AS orderableTest', 'tt.prevalence_threshold AS prevalenceThreshold',
+                        'tt.accredited AS testTypesAccredited', 'tt.deleted_at AS testTypesDeletedAt', 'tt.created_at AS testTypesCreatedAt',
+                        'tt.updated_at AS testTypesUpdatedAt', 'tc.id AS testCategoriesId', 'tc.name AS testCategoriesName',
+                        'tc.description AS testCategoriesDescription', 'tc.deleted_at AS testCategoriesDeletedAt',
+                        'tc.created_at AS testCategoriesCreatedAt', 'tc.updated_at AS testCategoriesUpdatedAt',
+                        'ts.id AS testStatusesId', 'ts.name AS testStatusesName', 'ts.test_phase_id AS testStatusesTestPhaseId',
+                        'tp.id AS testPhasesId', 'tp.name AS testPhasesName',
+                        'sp.id AS specimentestId', 'sp.specimen_type_id AS specimentestSpecimenTypeId', 'sp.specimen_status_id AS specimenStatusId',
+                        'sp.accepted_by AS specimentestAcceptedBy', 'sp.referral_id AS referralId', 'sp.time_collected AS specimentestTimeCollected',
+                        'sp.time_accepted AS specimentestTimeAccepted',
+                        'spt.id AS specimenTypesId', 'spt.name AS specimenTypesName', 'spt.description AS specimenTypesDescription',
+                        'spt.deleted_at AS specimenTypesDeletedAt', 'spt.created_at AS specimenTypesCreatedAt', 'spt.updated_at AS specimenTypesUpdatedAt',
+                        'sps.id AS specimenStatusesId', 'sps.name AS specimenStatusesName')
                     ->paginate(10);
 
         return Response::json($results, 200);

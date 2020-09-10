@@ -166,16 +166,28 @@ class ApiController extends \BaseController {
     public static function specimenRejections()
     {
 
-        $results = DB::table('analytic_specimen_rejections')
-                    ->leftJoin('analytic_specimen_rejection_reasons', function ($join){
-                        $join->on('analytic_specimen_rejections.rejection_reason_id', '=', 'analytic_specimen_rejection_reasons.rejection_id');
+        $results = DB::table('analytic_specimen_rejections AS asr')
+                    ->leftJoin('analytic_specimen_rejection_reasons AS asrr', function ($join){
+                        $join->on('asr.rejection_reason_id', '=', 'asrr.rejection_id');
                     })
-                    ->leftJoin('rejection_reasons', function($join){
-                        $join->on('rejection_reasons.id', '=', 'analytic_specimen_rejections.rejection_reason_id');
+                    ->leftJoin('rejection_reasons AS rr', function($join){
+                        $join->on('rr.id', '=', 'asr.rejection_reason_id');
                     })
-                    ->select('analytic_specimen_rejections.test_id', 'analytic_specimen_rejection_reasons.specimen_id',
-                            'analytic_specimen_rejection_reasons.rejection_id', 'analytic_specimen_rejection_reasons.reason_id',
-                            'rejection_reasons.reason')
+                    ->select('asr.id AS idspecimenrejection',
+                        'asr.test_id AS analyticSpecimenRejectionsTestId',
+                        'asr.specimen_id AS analyticSpecimenRejectionsSpecimenId',
+                        'asr.rejected_by AS analyticSpecimenRejectionsRejectedBy',
+                        'asr.rejection_reason_id AS analyticSpecimenRejectionsRejectionReasonId',
+                        'asr.reject_explained_to AS analyticSpecimenRejectionsRejectExplainedTo',
+                        'asr.time_rejected AS analyticSpecimenRejectionsTimeRejected',
+                        'asrr.rejection_id AS analyticSpecimenRejectionReasonsId',
+                        'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
+                        'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
+                        'asrr.reason_id AS analyticSpecimenRejectionReasonsReasonId',
+                        'asrr.created_at AS analyticSpecimenRejectionReasonsCreatedAt',
+                        'asrr.updated_at AS analyticSpecimenRejectionReasonsUpdatedAt',
+                        'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
+                        'rr.id AS idrejectreason')
                     ->paginate(10);
 
         return Response::json($results, 200);

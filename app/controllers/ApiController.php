@@ -214,10 +214,10 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function unhlsVisits($id)
+
+    public static function unhlsVisits()
     {
         $results = DB::table('unhls_patients AS up')
-                    ->where('up.id', '=', $id)
                     ->leftJoin('micro_patients_details AS mp', function ($join){
                         $join->on('up.id', '=', 'mp.patient_id');
                     })

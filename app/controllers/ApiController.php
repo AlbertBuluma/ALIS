@@ -98,25 +98,33 @@ class ApiController extends \BaseController {
     public static function fetchIsolatedOrganisms()
     {
 
-        $results = DB::table('isolated_organisms')
-            ->leftJoin('drug_susceptibility', function ($join){
-                $join->on('isolated_organisms.id', '=', 'drug_susceptibility.isolated_organism_id');
+        $results = DB::table('isolated_organisms AS io')
+            ->leftJoin('drug_susceptibility AS ds', function ($join){
+                $join->on('io.id', '=', 'ds.isolated_organism_id');
             })
-            ->leftJoin('organisms', function($join){
-                $join->on('isolated_organisms.organism_id', '=', 'organisms.id');
+            ->leftJoin('organisms AS og', function($join){
+                $join->on('io.organism_id', '=', 'og.id');
             })
-            ->leftJoin('drug_susceptibility_measures', function($join){
-                $join->on('drug_susceptibility.drug_susceptibility_measure_id', '=', 'drug_susceptibility_measures.id');
+            ->leftJoin('drug_susceptibility_measures AS dsm', function($join){
+                $join->on('ds.drug_susceptibility_measure_id', '=', 'dsm.id');
             })
-            ->leftJoin('drugs', function($join){
-                $join->on('drug_susceptibility.drug_id', '=', 'drugs.id');
+            ->leftJoin('drugs AS dg', function($join){
+                $join->on('ds.drug_id', '=', 'dg.id');
             })
-            ->where('isolated_organisms.organism_id', '!=', 'NULL')
-            ->select('isolated_organisms.test_id AS test_id', 'isolated_organisms.organism_id', 'organisms.name AS organism_name',
-                'organisms.description AS orgnism_description', 'drug_susceptibility.zone_diameter AS drug_susceptibility_zone_diameter',
-                'drugs.name AS drug_name', 'drugs.description AS drug_description',
-                'drug_susceptibility_measures.symbol AS drug_susceptibility_symbol',
-                'drug_susceptibility_measures.interpretation AS drug_susceptibility_interpretation')
+            ->where('io.organism_id', '!=', 'NULL')
+            ->select('io.id AS isolatedOrganismsId',  'io.user_id AS isolatedOrganismsUserId', 'io.test_id AS isolatedOrganismsTestId',
+                'io.organism_id AS isolatedOrganismsOrganismId', 'io.created_at AS isolatedOrganismsCreatedAt',
+                'io.updated_at AS isolatedOrganismsUpdatedAt',
+                'og.id AS organismsId', 'og.name AS organismsName', 'og.description AS organismsDescription',
+                'og.deleted_at AS organismsDeletedAt', 'og.created_at AS organismsCreatedAt', 'og.updated_at AS organismsUpdatedAt',
+                'ds.id AS drugSusceptibilityId', 'ds.user_id AS drugSusceptibilityUserId', 'ds.drug_id AS drugSusceptibilityDrugId',
+                'ds.isolated_organism_id AS drugSusceptibilityIsolatedOrganismId', 'ds.drug_susceptibility_measure_id AS drugSusceptibilityDrugSusceptibilityMeasureId',
+                'ds.zone_diameter AS zoneDiameter', 'ds.deleted_at AS drugSusceptibilityDeletedAt', 'ds.created_at AS drugSusceptibilityCreatedAt',
+                'ds.updated_at AS drugSusceptibilityUpdatedAt',
+                'dsm.id AS drugSusceptibilityMeasuresId', 'dsm.symbol AS symbol', 'dsm.interpretation AS interpretation',
+                'dg.id AS drugsId', 'dg.name AS drugsName', 'dg.description AS drugsDescription',
+                'dg.deleted_at AS drugsDeletedAt', 'dg.created_at AS drugsCreatedAt', 'dg.updated_at AS drugsUpdatedAt'
+            )
             ->paginate(10);
 
         return Response::json($results, 200);

@@ -133,7 +133,7 @@ class ApiController extends \BaseController
 
         return $results;
 //        return Response::json($results, 200);
-    }
+    }   //Microorganism POJO
 
 
     /**
@@ -178,7 +178,7 @@ class ApiController extends \BaseController
      * @return Response
      */
 //    public function specimenRejections($test_id) // Reject Reason POJO
-    public function rejectReason($test_id) // Reject Reason POJO
+    public function rejectReason($test_id) // rejectreasonList POJO
     {
 
         $results = DB::table('analytic_specimen_rejections AS asr')
@@ -272,7 +272,7 @@ class ApiController extends \BaseController
          * @return Response
          */
 
-        public function unhlsVisits()
+        public function unhlsVisits()   //PatientVisit POJO
         {
             $results = DB::table('unhls_patients AS up')
                 ->leftJoin('micro_patients_details AS mp', function ($join) {
@@ -309,7 +309,7 @@ class ApiController extends \BaseController
                     'uv.id AS unhlsVisitsid', 'uv.patient_id AS unhlsVisitspatientId', 'uv.visit_type AS visitType',
                     'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
                     'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitscreatedAt',
-                    'uv.updated_at AS unhlsVisitsupdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
+                    'uv.updated_at AS unhlsVisitsUpdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
                     'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
                     'uv.on_antibiotics AS onAntibiotics',
                     'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
@@ -361,7 +361,7 @@ class ApiController extends \BaseController
         {
             $results = DB::table('users AS u')
                 ->select('u.id AS usersId', 'u.username AS username', 'u.password AS password',
-                    'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation', 'u.image AS image',
+                    'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation',
                     'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
                     'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
                     'U.phone_contact AS phoneContact')
@@ -403,7 +403,7 @@ class ApiController extends \BaseController
                     'f.facility_contact AS facilityContact', 'f.facility_email AS facilityEmail',
                     'f.active AS facilitiesActive', 'f.code AS facilitiesCode', 'f.dhis2_name AS dhis2Name',
                     'f.dhis2_uid AS dhis2Uid', 'f.created_at AS facilitiesCreatedAt', 'f.updated_at AS facilitiesUpdatedAt',
-                    'rr.id AS refferalreasonId', 'rr.reason AS refferalreasonReason'
+                    'rr.id AS referralReasonsId', 'rr.reason AS referralReasonsReason'
                 )
                 ->orderBy('rf.id')
                 ->get();

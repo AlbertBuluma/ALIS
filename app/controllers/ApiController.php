@@ -140,10 +140,11 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function fetchUnhlsResults()
+    public function unhlsResults($test_id)
     {
 
         $results = DB::table('unhls_test_results')
+                    ->where('test_id', '=', $test_id)
                     ->leftJoin('measures', function($join){
                         $join->on('unhls_test_results.measure_id', '=', 'measures.id');
                     })
@@ -159,11 +160,40 @@ class ApiController extends \BaseController {
                         'measures.updated_at AS measuresUpdatedAt', 'measures.deleted_at AS measuresDeletedAt',
                         'measure_types.id AS measureTypesId', 'measure_types.name AS measureTypesName', 'measure_types.deleted_at AS measureTypesDeletedAt',
                         'measure_types.created_at AS measureTypesCreatedAt', 'measure_types.updated_at AS measureTypesUpdatedAt')
-                    ->paginate(10);
+                    ->orderBy('unhls_test_results.id')
+                    ->get();
+//                    ->paginate(10);
 
         //TODO measure_types.name to select column results
 
+//        return Response::json($results, 200);
+        return $results;
+    }
+
+    public static function specimens()
+    {
+//        $results = DB::table('specimens')
+//                ->leftJoin('specimen_types', function($join){
+//                    $join->on('specimens.specimen_type_id', '=', 'specimen_types.id');
+//                })
+//                ->leftJoin('specimen_statuses', function($join){
+//                    $join->on('specimens.specimen_status_id', '=', 'specimen_statuses.id');
+//                })
+//                ->select('specimens.*', 'specimen_types.*', 'specimen_statuses.*')
+//                ->paginate(10);
+//
+//
+        $results = DB::select(DB::raw('SELECT sp.id, sp.specimen_type_id, sp.specimen_status_id, sp.accepted_by, 
+                    sp.referral_id, sp.time_collected, sp.time_accepted ,st.id, st.name, st.description, st.deleted_at,
+                    st.created_at, st.updated_at,ss.*
+                    FROM specimens sp 
+                    LEFT JOIN specimen_types st 
+                    ON sp.specimen_type_id = st.id
+                    LEFT JOIN specimen_statuses ss
+                    ON sp.specimen_status_id = ss.id'));
+
         return Response::json($results, 200);
+
     }
 
 
@@ -172,34 +202,76 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function specimenRejections()
+//    public function specimenRejections($test_id) // Reject Reason POJO
+    public function rejectReason($test_id) // Reject Reason POJO
     {
 
         $results = DB::table('analytic_specimen_rejections AS asr')
+                    ->where('test_id', '=', $test_id)
                     ->leftJoin('analytic_specimen_rejection_reasons AS asrr', function ($join){
                         $join->on('asr.rejection_reason_id', '=', 'asrr.rejection_id');
                     })
                     ->leftJoin('rejection_reasons AS rr', function($join){
                         $join->on('rr.id', '=', 'asr.rejection_reason_id');
                     })
-                    ->select('asr.id AS idspecimenrejection',
-                        'asr.test_id AS analyticSpecimenRejectionsTestId',
-                        'asr.specimen_id AS analyticSpecimenRejectionsSpecimenId',
-                        'asr.rejected_by AS analyticSpecimenRejectionsRejectedBy',
-                        'asr.rejection_reason_id AS analyticSpecimenRejectionsRejectionReasonId',
-                        'asr.reject_explained_to AS analyticSpecimenRejectionsRejectExplainedTo',
-                        'asr.time_rejected AS analyticSpecimenRejectionsTimeRejected',
-                        'asrr.rejection_id AS analyticSpecimenRejectionReasonsId',
+                    ->select(
+//                            'asr.id AS idspecimenrejection',
+//                        'asr.test_id AS analyticSpecimenRejectionsTestId',
+//                        'asr.specimen_id AS analyticSpecimenRejectionsSpecimenId',
+//                        'asr.rejected_by AS analyticSpecimenRejectionsRejectedBy',
+//                        'asr.rejection_reason_id AS analyticSpecimenRejectionsRejectionReasonId',
+//                        'asr.reject_explained_to AS analyticSpecimenRejectionsRejectExplainedTo',
+//                        'asr.time_rejected AS analyticSpecimenRejectionsTimeRejected',
+                        'asrr.id AS analyticSpecimenRejectionReasonsId',
                         'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
                         'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
                         'asrr.reason_id AS analyticSpecimenRejectionReasonsReasonId',
                         'asrr.created_at AS analyticSpecimenRejectionReasonsCreatedAt',
                         'asrr.updated_at AS analyticSpecimenRejectionReasonsUpdatedAt',
                         'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
-                        'rr.id AS idrejectreason')
-                    ->paginate(10);
+                        'rr.id AS rejectionReasonsId',
+                        'rr.reason AS rejectionReasonsReason')
+                    ->orderBy('asrr.id')
+                    ->get();
+//                    ->paginate(10);
 
-        return Response::json($results, 200);
+        return $results;
+    }
+
+
+    //public function rejectReason($test_id)  // Specimenreject POJO
+    public function specimenReject($test_id)  // Specimenreject POJO
+    {
+            $results = DB::table('analytic_specimen_rejections AS asr')
+                ->where('test_id', '=', $test_id)
+                ->leftJoin('analytic_specimen_rejection_reasons AS asrr', function ($join){
+                    $join->on('asr.rejection_reason_id', '=', 'asrr.reason_id');
+                })
+                ->leftJoin('rejection_reasons AS rr', function($join){
+                    $join->on('rr.id', '=', 'asr.rejection_reason_id');
+                })
+                ->select('asr.id AS analyticSpecimenRejectionsId',
+                    'asr.test_id AS testId',
+                    'asr.specimen_id AS specimenId',
+                    'asr.rejected_by AS rejectedBy',
+                    'asr.rejection_reason_id AS rejectionReasonId',
+                    'asr.reject_explained_to AS rejectExplainedTo',
+                    'asr.time_rejected AS timeRejected'
+                )
+    //                'asrr.rejection_id AS analyticSpecimenRejectionReasonsId',
+    //                'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
+    //                'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
+    //                'asrr.reason_id AS analyticSpecimenRejectionReasonsReasonId',
+    //                'asrr.created_at AS analyticSpecimenRejectionReasonsCreatedAt',
+    //                'asrr.updated_at AS analyticSpecimenRejectionReasonsUpdatedAt',
+    //                'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
+    //                'rr.id AS rejectionReasonsId',
+    //                'rr.reason AS rejectionReasonsReason')
+                ->orderBy('asr.id')
+                ->get();
+
+        return $results;
+
     }
 
 
@@ -268,6 +340,34 @@ class ApiController extends \BaseController {
     }
 
 
+    public function referrals($test_id)
+    {
+        $results = DB::table('referrals AS rf')
+                    ->where('test_id', '=', $test_id)
+                    ->leftJoin('facilities AS f', function($join){
+                        $join->on('rf.facility_id', '=', 'f.id');
+                    })
+                    ->leftJoin('referral_reasons AS rr', function ($join){
+                        $join->on('rf.referral_reason', '=', 'rr.id');
+                    })
+                    ->select('rf.id AS referralsId', 'rf.test_id AS testId', 'rf.sample_obtainer AS sampleObtainer',
+                        'rf.cadre_obtainer AS cadreObtainer', 'rf.sample_date AS sampleDate', 'rf.sample_time AS sampleTime',
+                        'rf.time_dispatch AS timeDispatch', 'rf.storage_condition AS storageCondition',
+                        'rf.transport_type AS transportType', 'rf.status AS referralsStatus',
+                        'rf.referral_reason AS referralReason', 'rf.priority_specimen AS prioritySpecimen',
+                        'rf.facility_id AS refferalFacilityId', 'rf.person AS person',
+                        'rf.contacts AS contacts', 'rf.user_id AS userId', 'rf.created_at AS createdAt',
+                        'rf.updated_at AS updatedAt', 'f.id AS facilitiesId', 'f.name AS facilitiesName',
+                        'f.facility_contact AS facilityContact', 'f.facility_email AS facilityEmail',
+                        'f.active AS facilitiesActive', 'f.code AS facilitiesCode', 'f.dhis2_name AS dhis2Name',
+                        'f.dhis2_uid AS dhis2Uid', 'f.created_at AS facilitiesCreatedAt', 'f.updated_at AS facilitiesUpdatedAt',
+                        'rr.id AS refferalreasonId', 'rr.reason AS refferalreasonReason'
+                        )
+                    ->orderBy('rf.id')
+                    ->get();
+
+        return $results;
+    }
 
     /**
      * Display a listing of UNHLS Tests.

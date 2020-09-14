@@ -274,6 +274,20 @@ class ApiController extends \BaseController {
 
     }
 
+    public function measureRanges($measure_id)
+    {
+        $results = DB::table('measure_ranges AS mr')
+                        ->where('measure_id', '=', $measure_id)
+                        ->select('mr.id AS measureRangesId', 'mr.measure_id AS measureRangesMeasureId', 'mr.age_min AS ageMin',
+                                'mr.age_max AS ageMax', 'mr.gender AS gender', 'mr.flag_min AS flagMin', 'mr.flag_max AS flagMax',
+                                'mr.range_lower AS rangeLower', 'mr.range_upper AS rangeUpper', 'mr.flag_lower AS flagLower',
+                                'mr.flag_upper AS flagUpper', 'mr.alphanumeric AS alphanumeric', 'mr.interpretation AS interpretation',
+                                'mr.deleted_at AS measureRangesDeletedAt', 'mr.result_interpretation_id AS resultInterpretationId')
+                        ->orderBy('mr.id')
+                        ->get();
+//                        ->paginate(10);
+
+        return $results;
 
     public static function measureRanges()
     {

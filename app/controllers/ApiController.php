@@ -632,7 +632,7 @@ class ApiController extends \BaseController {
         $poc_results = [];
         foreach($all_visits['poc'] as $poc){
             $poc['poc_results'] = [];
-            $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['id'])), true);
+            $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['poc_id'])), true);
 
             $poc_results[] = $poc;
 

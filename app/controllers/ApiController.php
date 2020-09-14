@@ -638,6 +638,20 @@ class ApiController extends \BaseController
             return json_decode($settings, true);
         }
 
+
+        public function recentVisits()
+        {
+            $results = Input::all();
+
+            $visit_id = Input::get('visit_id');
+            $import_date = Input::get('import_date');
+
+//            $result = $visit_id.' '.$import_date;
+
+
+
+        }
+
         /**
          * Display a listing of the resource.
          *

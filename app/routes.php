@@ -1303,3 +1303,5 @@ Route::get('/users', 'ApiController@users');
 Route::get('/referrals', 'ApiController@referrals');
 
 Route::get('clinicians', 'ApiController@clinicians');
+
+Route::post('/recent_visits', 'ApiController@recentVisits');

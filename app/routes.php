@@ -62,7 +62,10 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@loginAction"
     ));
 
-});
+    Route::any('/settings', array(
+        "as" => "facility.settings",
+        "uses" => "UserController@configureFacilitySettings"
+    ));
 
 Route::get('/api/warehouse', function (){
     $api = new ApiController();

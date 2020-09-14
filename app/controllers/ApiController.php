@@ -95,15 +95,16 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function fetchIsolatedOrganisms()
+    public function fetchIsolatedOrganisms($test_id)
     {
 
         $results = DB::table('isolated_organisms AS io')
-            ->leftJoin('drug_susceptibility AS ds', function ($join){
-                $join->on('io.id', '=', 'ds.isolated_organism_id');
-            })
+            ->where('test_id', '=', $test_id)
             ->leftJoin('organisms AS og', function($join){
                 $join->on('io.organism_id', '=', 'og.id');
+            })
+            ->leftJoin('drug_susceptibility AS ds', function ($join){
+                $join->on('io.id', '=', 'ds.isolated_organism_id');
             })
             ->leftJoin('drug_susceptibility_measures AS dsm', function($join){
                 $join->on('ds.drug_susceptibility_measure_id', '=', 'dsm.id');
@@ -125,9 +126,12 @@ class ApiController extends \BaseController {
                 'dg.id AS drugsId', 'dg.name AS drugsName', 'dg.description AS drugsDescription',
                 'dg.deleted_at AS drugsDeletedAt', 'dg.created_at AS drugsCreatedAt', 'dg.updated_at AS drugsUpdatedAt'
             )
-            ->paginate(10);
+            ->orderBy('io.id')
+            ->get();
+//            ->paginate(10);
 
-        return Response::json($results, 200);
+        return $results;
+//        return Response::json($results, 200);
     }
 
 

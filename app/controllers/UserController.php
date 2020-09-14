@@ -51,6 +51,42 @@ class UserController extends Controller {
         return View::make("user.dashboard");
     }
 
+    public function configureFacilitySettings()
+    {
+        if (Input::server("REQUEST_METHOD") == "POST")
+        {
+            $validator = Validator::make(Input::all(), array(
+                "username" => "required|min:4",
+                "password" => "required|min:6",
+//                "url" => "required"
+            ));
+
+            if ($validator->passes())
+            {
+                $facility_settings = Input::all();
+
+                $file = fopen('config.properties', 'w');
+                fwrite($file, json_encode($facility_settings));
+
+                $credentials = array(
+                    "username" => Input::get("username"),
+                    "password" => Input::get("password"),
+//                    "url" => Input::get("url"),
+                );
+
+//                if(Auth::attempt($credentials)){
+////                    return Redirect::route("user.home");
+//                    return Redirect::route("facility.settings");
+//                }
+
+            }
+            return Redirect::route('facility.settings')->withInput(Input::except('password'))
+                ->withErrors($validator)
+                ->with('message', trans('messages.invalid-login'));
+        }
+
+        return View::make("user.facilitySettings");
+    }
 
     /**
      * Display a listing of the users.

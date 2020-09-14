@@ -305,11 +305,11 @@ class ApiController extends \BaseController {
      * @return Response
      */
 
-    public static function unhlsVisits()
+    public function unhlsVisits()
     {
         $results = DB::table('unhls_patients AS up')
                     ->leftJoin('micro_patients_details AS mp', function ($join){
-                        $join->on('up.id', '=', 'mp.patient_id');
+                        $join->on('mp.patient_id', '=', 'up.id');
                     })
                     ->leftJoin('unhls_visits AS uv', function($join){
                         $join->on('up.id', '=', 'uv.patient_id');
@@ -347,10 +347,60 @@ class ApiController extends \BaseController {
                             'uv.on_antibiotics AS onAntibiotics',
                             'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
                             'wt.id AS wardTypeId', 'wt.name AS wardTypeName')
-                    ->paginate(10);
+                    ->orderBy('unhlsVisitsid')
+                    ->get();
 
-        return Response::json($results, 200);
+//        return Response::json($results, 200);
+        return $results;
 
+    }
+
+    public function pocResults($patient_id)
+    {
+
+        $results = DB::table('poc_results AS pr')
+                    ->where('patient_id', '=', $patient_id)
+                    ->select('pr.id AS pocresultId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
+                            'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
+                            'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
+                            'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
+                    ->orderBy('pr.id')
+                    ->get();
+
+        return $results;
+
+    }
+
+
+    public function pocTable(){
+        $results = DB::table('poc_tables AS pt')
+                    ->select('id AS poc_id', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
+                            'provisional_diagnosis AS provisionalDiagnosis', 'caretaker_number AS caretakerNumber', 'entry_point AS entryPoint', 'mother_name AS motherName',
+                            'infant_name AS infantName', 'breastfeeding_status AS breastfeedingStatus', 'mother_hiv_status AS motherHivStatus', 'collection_date AS collectionDate',
+                            'pcr_level AS pcrLevel', 'created_by AS createdBy', 'pmtct_antenatal AS pmtctAntenatal', 'pmtct_delivery AS pmtctDelivery', 'pmtct_postnatal AS pmtctPostnatal',
+                            'admission_date AS admissionDate', 'sample_id AS sampleId', 'infant_pmtctarv AS infantPmtctarv', 'mother_pmtctarv AS motherPmtctarv', 'other_entry_point AS otherEntryPoint',
+                            'deleted_at AS deletedAt', 'created_at AS createdAt', 'updated_at AS updatedAt', 'ulin AS ulin',
+                            'given_contrimazole AS givenContrimazole', 'delivered_at AS deliveredAt', 'nin AS nin',
+                            'feeding_status AS feedingStatus')
+                    ->orderBy('id')
+                    ->get();
+
+        return $results;
+    }
+
+
+    public function users()
+    {
+        $results = DB::table('users AS u')
+                        ->select('u.id AS usersId', 'u.username AS username', 'u.password AS password',
+                        'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation', 'u.image AS image',
+                        'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
+                        'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
+                        'U.phone_contact AS phoneContact')
+                        ->orderBy('u.id')
+                        ->get();
+
+        return $results;
     }
 
 

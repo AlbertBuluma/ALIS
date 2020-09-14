@@ -371,6 +371,16 @@ class ApiController extends \BaseController
             return $results;
         }
 
+        public function clinicians()
+        {
+            $results = DB::table('clinicians AS c')
+                        ->select('c.id AS clinicians_id', 'c.name AS name', 'c.cadre AS cadre',
+                                'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
+                                'c.active AS active','c.updated_at AS updatedAt')
+                        ->get();
+
+            return $results;
+        }
 
         public function referrals($test_id)
         {
@@ -610,6 +620,8 @@ class ApiController extends \BaseController
 
             // Add users
             $all_visits['users'] = json_decode(json_encode($this->users()));
+
+            $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
 
 //        $paginator = Paginator::make($all_visits, count($all_visits), $perPage = 4);
 //

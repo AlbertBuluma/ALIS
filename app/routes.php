@@ -1301,3 +1301,5 @@ Route::get('/poc_table', 'ApiController@pocTable');
 Route::get('/users', 'ApiController@users');
 
 Route::get('/referrals', 'ApiController@referrals');
+
+Route::get('clinicians', 'ApiController@clinicians');

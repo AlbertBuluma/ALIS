@@ -45,6 +45,7 @@ return array(
     'role' => 'Role|Roles',
     'save' => 'Save',
     'save-request' => 'Save and Request',
+    'facility_settings' => 'Save Settings',
     'submit' => 'Submit',
     'save-all' => 'Save All',
     'type' => 'Type',

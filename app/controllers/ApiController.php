@@ -438,9 +438,10 @@ class ApiController extends \BaseController {
      *
      * @return Response
      */
-    public static function unhlsTests()
+    public function specimenTest($visit_id)
     {
         $results = DB::table('unhls_tests AS ut')
+                    ->where('ut.visit_id', '=', $visit_id)
                     ->leftJoin('test_types AS tt', function($join){
                         $join->on('ut.test_type_id', '=', 'tt.id');
                     })
@@ -468,7 +469,7 @@ class ApiController extends \BaseController {
                         'ut.verified_by AS unhlsTestsVerifiedBy', 'ut.requested_by AS unhlsTestsRequestedBy',
                         'ut.clinician_id AS unhlsTestsClinicianId', 'ut.purpose AS purpose', 'ut.time_created AS timeCreated',
                         'ut.time_started AS timeStarted', 'ut.time_completed AS timeCompleted', 'ut.time_verified AS timeVerified',
-                        'ut.time_sent AS timeSent', 'ut.external_id AS externalId', 'ut.instrument AS instrument',
+                        'ut.time_sent AS timeSent', 'ut.external_id AS externalId', 'ut.instrument AS instrument', 'ut.approved_by AS approvedBy',
                         'ut.approved_by AS timeApproved', 'ut.revised_by AS unhlsTestsRevisedBy', 'ut.time_revised AS timeRevised',
                         'tt.id AS testTypesId', 'tt.name AS testTypesName', 'tt.description AS testTypesDescription',
                         'tt.test_category_id AS testTypesTestCategoryId', 'tt.targetTAT AS targetTAT', 'tt.targetTAT_unit AS targetTATunit',
@@ -479,17 +480,184 @@ class ApiController extends \BaseController {
                         'tc.created_at AS testCategoriesCreatedAt', 'tc.updated_at AS testCategoriesUpdatedAt',
                         'ts.id AS testStatusesId', 'ts.name AS testStatusesName', 'ts.test_phase_id AS testStatusesTestPhaseId',
                         'tp.id AS testPhasesId', 'tp.name AS testPhasesName',
-                        'sp.id AS specimentestId', 'sp.specimen_type_id AS specimentestSpecimenTypeId', 'sp.specimen_status_id AS specimenStatusId',
+                        'sp.id AS specimensId', 'sp.specimen_type_id AS specimentestSpecimenTypeId', 'sp.specimen_status_id AS specimenStatusId',
                         'sp.accepted_by AS specimentestAcceptedBy', 'sp.referral_id AS referralId', 'sp.time_collected AS specimentestTimeCollected',
                         'sp.time_accepted AS specimentestTimeAccepted',
                         'spt.id AS specimenTypesId', 'spt.name AS specimenTypesName', 'spt.description AS specimenTypesDescription',
                         'spt.deleted_at AS specimenTypesDeletedAt', 'spt.created_at AS specimenTypesCreatedAt', 'spt.updated_at AS specimenTypesUpdatedAt',
                         'sps.id AS specimenStatusesId', 'sps.name AS specimenStatusesName')
-                    ->paginate(10);
+                    ->orderBy('ut.id')
+                    ->get();
 
-        return Response::json($results, 200);
+
+        return $results;
+//        return Response::json($results, 200);
+
 
     }
+
+
+    public function getPatientVisits()
+    {
+        $visit_id = [];
+        $specimens = [];
+        $visits = $this->unhlsVisits();
+        $visits = json_decode(json_encode($visits), true);
+
+        // Add Specimentest key to each visit
+        $patient_visits = [];
+        $visits = json_decode(json_encode($visits), true);
+
+        $visits2 = [];
+        $test_results = [];
+        foreach ($visits as $visit){
+            $visit['specimentestList'] = [];
+
+            $visit_tests = [];
+            $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsid'])), true);
+
+            $visit['specimentestList'] = $visit_tests;
+
+            $visits2[] = $visit;
+
+        }
+//        dd(json_encode($visits2));
+
+        $visit3 = [];
+        foreach($visits2 as $patient_visit){
+            if(!empty($patient_visit['specimentestList'])){
+                $updated_patient_visit = [];
+                $updated_tests = [];
+                $test_results = [];
+                $test_organisms = [];
+                $test_rejects = [];
+                $test_referrals = [];
+
+                foreach ($patient_visit['specimentestList'] as $spec_test){
+                    // Appending test results to specimentest
+                    $spec_test['testresultList'] = [];
+                    $test_results = json_decode(json_encode($this->unhlsResults($spec_test['unhlsTestsId'])), true);
+                    $spec_test['testresultList'] = $test_results;
+
+
+                    // Appending microorganisms to specimentest
+                    $spec_test['microorganismList'] = [];
+                    $test_organisms = json_decode(json_encode($this->fetchIsolatedOrganisms($spec_test['unhlsTestsId'])), true);
+                    $spec_test['microorganismList'] = $test_organisms;
+
+
+                    // Appending specimenrejectList to specimentest
+                    $spec_test['specimenrejectList'] = [];
+                    $test_rejects = json_decode(json_encode($this->specimenReject($spec_test['unhlsTestsId'])), true);
+                    $spec_test['specimenrejectList'] = $test_rejects;
+
+                    // Appending test referrals to specimentest
+                    $spec_test['test_referrals'] = [];
+                    $test_referrals = json_decode(json_encode($this->referrals($spec_test['unhlsTestsId'])), true);
+                    $spec_test['test_referrals'] = $test_referrals;
+
+                    $updated_tests[] = $spec_test;
+                }
+
+                $patient_visit['specimentestList'] = $updated_tests;
+                $visit3[] = $patient_visit;
+//                dd(json_encode($patient_visit));
+            }
+//            }
+            $specimen[] = $patient_visit;
+        }
+//        dd(json_encode($visit3));
+
+        $visit4 = [];
+        foreach($visit3 as $visit){
+//            dd(json_encode($visit['specimentestList']));
+            $result_ranges = [];
+            $updated_tests = [];
+
+            foreach ($visit['specimentestList'] as $visit_test){
+                $updated_result_list = [];
+                $ranges_list = [];
+                foreach ($visit_test['testresultList'] as $test_result){
+                    $test_result['measurerangeList'] = [];
+                    $ranges_list = json_decode(json_encode($this->measureRanges($test_result['measuresId'])), true);
+
+                    $test_result['measurerangeList'] = $ranges_list;
+                    $updated_result_list[] = $test_result;
+
+                }
+
+                $updated_rejections = [];
+                $reasons_list = [];
+                foreach ($visit_test['specimenrejectList'] as $test_reject){
+//                    dd($test_reject);
+                    $test_reject['rejectreasonList'] = [];
+//                    $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['analyticSpecimenRejectionsTestId'])), true);
+//                    $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['analyticSpecimenRejectionsTestId'])), true);
+                    $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['testId'])), true);
+
+                    $test_reject['rejectreasonList'] = $reasons_list;
+                    $updated_rejections[] = $test_reject;
+
+                }
+
+
+//                dd(json_encode($updated_result_list));
+                $visit_test['testresultList'] = $updated_result_list;
+                $visit_test['specimenrejectList'] = $updated_rejections;
+
+                $updated_tests[] = $visit_test;
+
+//                dd(json_encode($visit_test));
+            }
+//                dd(json_encode($updated_tests));
+            $visit['specimentestList'] = $updated_tests;
+//            dd(json_encode($visit));
+
+
+            $visit4[] = $visit;
+//            dd(json_encode($updated_result_list));
+//
+            }
+
+//        dd(json_encode($visit4));
+
+        $all_visits['patientvisit'] = $visit4;
+
+
+        // Add POC table
+        $all_visits['poc'] = json_decode(json_encode($this->pocTable()), true);
+
+        // Add poc_result to each POC
+        $poc_visits = [];
+        $poc_results = [];
+        foreach($all_visits['poc'] as $poc){
+            $poc['poc_results'] = [];
+            $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['id'])), true);
+
+            $poc_results[] = $poc;
+
+        }
+
+        $all_visits['poc'] = $poc_results;
+
+        // Add users
+        $all_visits['users'] = json_decode(json_encode($this->users()));
+
+//        $paginator = Paginator::make($all_visits, count($all_visits), $perPage = 4);
+//
+
+//        return $paginator;
+        return Response::json($all_visits);
+
+    }
+
+
+    public function facilitySettings()
+    {
+        $settings = file_get_contents('config.properties');
+        return json_decode($settings, true);
+    }
+
 	/**
 	 * Display a listing of the resource.
 	 *

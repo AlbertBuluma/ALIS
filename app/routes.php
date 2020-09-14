@@ -52,10 +52,6 @@ Route::group(array("before" => "guest"), function()
         "uses" => "InterfacerController@getTestRequestsForInstrument"
     ));
 
-//    Route::get('/api/warehouse', function (){
-//        $api = new ApiController();
-//        return $api->facility();
-//    });
 
     Route::any('/', array(
         "as" => "user.login",
@@ -67,29 +63,10 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@configureFacilitySettings"
     ));
 
-Route::get('/api/warehouse', function (){
-    $api = new ApiController();
-    return $api->facility();
-});
-
-Route::get('/fp', function(){
-
-        $starttime = microtime(true);
-//        $file      = fsockopen ("www.cphl.go.ug", 80, $errno, $errstr, 10);
-        $file      = fsockopen ("216.104.201.69", 80, $errno, $errstr, 10);
-//        $file      = fsockopen ("https://587edf74ecfa.ngrok.io/api/warehouse", 80, $errno, $errstr, 30);
-        $stoptime  = microtime(true);
-        $status    = 0;
-
-        if (!$file) $status = -1;  // Site is down
-        else {
-            fclose($file);
-            $status = ($stoptime - $starttime) * 1000;
-            $status = floor($status). 'ms';
-        }
-        return $status;
 
 });
+
+
 
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
@@ -1298,6 +1275,9 @@ Route::get('/specimens', 'ApiController@specimens');
 
 //Fetch Specimen rejections
 Route::get('/specimen_rejections', 'ApiController@specimenRejections');
+
+//Fetch UNHLS Districts
+Route::get('/district', 'ApiController@districts');
 
 //Fetch measure ranges
 Route::get('/measure_ranges', 'ApiController@measureRanges');

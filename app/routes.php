@@ -1285,13 +1285,16 @@ Route::post('warehouse_ids', 'ApiController@warehouseIds');
 Route::get('/tables/{table}', 'ApiController@fetchTableRecords');
 
 // Fetch Isolated organisms
-Route::get('/isolated_organisms', 'ApiController@fetchIsolatedOrganisms');
+Route::get('/micro_organisms', 'ApiController@fetchIsolatedOrganisms');
 
 //Fetch unhls patients
 Route::get('/unhls_patients', 'ApiController@unhlsPatients');
 
 // Fetch UNHLS results
-Route::get('/unhls_results', 'ApiController@fetchUnhlsResults');
+Route::get('/unhls_results', 'ApiController@unhlsResults');
+
+//Fetch specimens
+Route::get('/specimens', 'ApiController@specimens');
 
 //Fetch Specimen rejections
 Route::get('/specimen_rejections', 'ApiController@specimenRejections');

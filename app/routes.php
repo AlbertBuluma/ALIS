@@ -1306,4 +1306,18 @@ Route::get('/measure_ranges', 'ApiController@measureRanges');
 Route::get('patient_visit', 'ApiController@unhlsVisits');
 
 //Fetch UNHLS test data
-Route::get('unhls_tests', 'ApiController@unhlsTests');
+Route::get('specimen_test', 'ApiController@specimenTest');
+
+Route::get('/reject_reason', 'ApiController@rejectReason');
+
+Route::get('/all_visits', 'ApiController@getPatientVisits');
+
+Route::get('/facility_settings', 'ApiController@facilitySettings');
+
+Route::get('poc_results', 'ApiController@pocResults');
+
+Route::get('/poc_table', 'ApiController@pocTable');
+
+Route::get('/users', 'ApiController@users');
+
+Route::get('/referrals', 'ApiController@referrals');

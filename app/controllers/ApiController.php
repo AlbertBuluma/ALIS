@@ -127,7 +127,7 @@ class ApiController extends \BaseController
                 'dg.id AS drugsId', 'dg.name AS drugsName', 'dg.description AS drugsDescription',
                 'dg.deleted_at AS drugsDeletedAt', 'dg.created_at AS drugsCreatedAt', 'dg.updated_at AS drugsUpdatedAt'
             )
-            ->orderBy('io.id')
+            ->orderBy('io.id', 'asc')
             ->get();
 //            ->paginate(10);
 
@@ -161,7 +161,7 @@ class ApiController extends \BaseController
                 'measures.updated_at AS measuresUpdatedAt', 'measures.deleted_at AS measuresDeletedAt',
                 'measure_types.id AS measureTypesId', 'measure_types.name AS measureTypesName', 'measure_types.deleted_at AS measureTypesDeletedAt',
                 'measure_types.created_at AS measureTypesCreatedAt', 'measure_types.updated_at AS measureTypesUpdatedAt')
-            ->orderBy('unhls_test_results.id')
+            ->orderBy('unhls_test_results.id', 'asc')
             ->get();
 //                    ->paginate(10);
 
@@ -206,7 +206,7 @@ class ApiController extends \BaseController
                 'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
                 'rr.id AS rejectionReasonsId',
                 'rr.reason AS rejectionReasonsReason')
-            ->orderBy('asrr.id')
+            ->orderBy('asrr.id', 'asc')
             ->get();
 //                    ->paginate(10);
 
@@ -242,7 +242,7 @@ class ApiController extends \BaseController
             //                'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
             //                'rr.id AS rejectionReasonsId',
             //                'rr.reason AS rejectionReasonsReason')
-            ->orderBy('asr.id')
+            ->orderBy('asr.id', 'asc')
             ->get();
 
         return $results;
@@ -258,7 +258,7 @@ class ApiController extends \BaseController
                 'mr.range_lower AS rangeLower', 'mr.range_upper AS rangeUpper', 'mr.flag_lower AS flagLower',
                 'mr.flag_upper AS flagUpper', 'mr.alphanumeric AS alphanumeric', 'mr.interpretation AS interpretation',
                 'mr.deleted_at AS measureRangesDeletedAt', 'mr.result_interpretation_id AS resultInterpretationId')
-            ->orderBy('mr.id')
+            ->orderBy('mr.id', 'asc')
             ->get();
 //                        ->paginate(10);
 
@@ -272,7 +272,7 @@ class ApiController extends \BaseController
          * @return Response
          */
 
-        public function unhlsVisits()   //PatientVisit POJO
+    public function unhlsVisits()   //PatientVisit POJO
         {
             $results = DB::table('unhls_patients AS up')
                 ->leftJoin('micro_patients_details AS mp', function ($join) {
@@ -314,7 +314,7 @@ class ApiController extends \BaseController
                     'uv.on_antibiotics AS onAntibiotics',
                     'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
                     'wt.id AS wardTypeId', 'wt.name AS wardTypeName')
-                ->orderBy('unhlsVisitsid')
+                ->orderBy('uv.id', 'asc')
                 ->get();
 
 //        return Response::json($results, 200);
@@ -322,7 +322,7 @@ class ApiController extends \BaseController
 
         }
 
-        public function pocResults($patient_id)
+    public function pocResults($patient_id)
         {
 
             $results = DB::table('poc_results AS pr')
@@ -331,7 +331,7 @@ class ApiController extends \BaseController
                     'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
                     'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
                     'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
-                ->orderBy('pr.id')
+                ->orderBy('pr.id', 'asc')
                 ->get();
 
             return $results;
@@ -350,7 +350,7 @@ class ApiController extends \BaseController
                     'deleted_at AS deletedAt', 'created_at AS createdAt', 'updated_at AS updatedAt', 'ulin AS ulin',
                     'given_contrimazole AS givenContrimazole', 'delivered_at AS deliveredAt', 'nin AS nin',
                     'feeding_status AS feedingStatus')
-                ->orderBy('id')
+                ->orderBy('id', 'asc')
                 ->get();
 
             return $results;
@@ -365,7 +365,7 @@ class ApiController extends \BaseController
                     'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
                     'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
                     'U.phone_contact AS phoneContact')
-                ->orderBy('u.id')
+                ->orderBy('u.id', 'asc')
                 ->get();
 
             return $results;
@@ -377,6 +377,7 @@ class ApiController extends \BaseController
                         ->select('c.id AS clinicians_id', 'c.name AS name', 'c.cadre AS cadre',
                                 'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
                                 'c.active AS active','c.updated_at AS updatedAt')
+                        ->orderBy('c.id', 'asc')
                         ->get();
 
             return $results;
@@ -405,7 +406,7 @@ class ApiController extends \BaseController
                     'f.dhis2_uid AS dhis2Uid', 'f.created_at AS facilitiesCreatedAt', 'f.updated_at AS facilitiesUpdatedAt',
                     'rr.id AS referralReasonsId', 'rr.reason AS referralReasonsReason'
                 )
-                ->orderBy('rf.id')
+                ->orderBy('rf.id', 'asc')
                 ->get();
 
             return $results;
@@ -416,7 +417,7 @@ class ApiController extends \BaseController
          *
          * @return Response
          */
-        public function specimenTest($visit_id)
+        public function specimenTest($visit_id )
         {
             $results = DB::table('unhls_tests AS ut')
                 ->where('ut.visit_id', '=', $visit_id)
@@ -464,7 +465,7 @@ class ApiController extends \BaseController
                     'spt.id AS specimenTypesId', 'spt.name AS specimenTypesName', 'spt.description AS specimenTypesDescription',
                     'spt.deleted_at AS specimenTypesDeletedAt', 'spt.created_at AS specimenTypesCreatedAt', 'spt.updated_at AS specimenTypesUpdatedAt',
                     'sps.id AS specimenStatusesId', 'sps.name AS specimenStatusesName')
-                ->orderBy('ut.id')
+                ->orderBy('ut.id', 'asc')
                 ->get();
 
 

@@ -677,11 +677,11 @@ class ApiController extends \BaseController
 
             $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
 
-//        $paginator = Paginator::make($all_visits, count($all_visits), $perPage = 4);
-//
+//            return Paginator::make($all_visits['patientvisit'], count($all_visits['patientvisit']), $perPage = 4);
 
 //        return $paginator;
             return Response::json($all_visits);
+//            return $paginator;
 
         }
 

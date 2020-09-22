@@ -394,7 +394,7 @@ class ApiController extends \BaseController
         public function pocTable()
         {
             $results = DB::table('poc_tables AS pt')
-                ->select('id AS poc_id', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
+                ->select('id AS pocId', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
                     'provisional_diagnosis AS provisionalDiagnosis', 'caretaker_number AS caretakerNumber', 'entry_point AS entryPoint', 'mother_name AS motherName',
                     'infant_name AS infantName', 'breastfeeding_status AS breastfeedingStatus', 'mother_hiv_status AS motherHivStatus', 'collection_date AS collectionDate',
                     'pcr_level AS pcrLevel', 'created_by AS createdBy', 'pmtct_antenatal AS pmtctAntenatal', 'pmtct_delivery AS pmtctDelivery', 'pmtct_postnatal AS pmtctPostnatal',
@@ -664,7 +664,7 @@ class ApiController extends \BaseController
             $poc_results = [];
             foreach ($all_visits['poc'] as $poc) {
                 $poc['poc_results'] = [];
-                $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['poc_id'])), true);
+                $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
 
                 $poc_results[] = $poc;
 

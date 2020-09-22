@@ -260,7 +260,6 @@ class ApiController extends \BaseController
                 'mr.deleted_at AS measureRangesDeletedAt', 'mr.result_interpretation_id AS resultInterpretationId')
             ->orderBy('mr.id', 'asc')
             ->get();
-//                        ->paginate(10);
 
             return $results;
     }
@@ -306,9 +305,9 @@ class ApiController extends \BaseController
                     'mp.updated_at AS microPatientsDetailsUpdatedAt',
                     'ud.id AS unhlsDistrictsId', 'ud.name AS unhlsDistrictsName', 'ud.created_at AS unhlsDistrictsCreatedAt',
                     'ud.updated_at AS unhlsDistrictsUpdatedAt',
-                    'uv.id AS unhlsVisitsid', 'uv.patient_id AS unhlsVisitspatientId', 'uv.visit_type AS visitType',
+                    'uv.id AS unhlsVisitsId', 'uv.patient_id AS unhlsVisitsPatientId', 'uv.visit_type AS visitType',
                     'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
-                    'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitscreatedAt',
+                    'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitsCreatedAt',
                     'uv.updated_at AS unhlsVisitsUpdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
                     'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
                     'uv.on_antibiotics AS onAntibiotics',
@@ -317,7 +316,6 @@ class ApiController extends \BaseController
                 ->orderBy('uv.id', 'asc')
                 ->get();
 
-//        return Response::json($results, 200);
             return $results;
 
         }
@@ -375,26 +373,26 @@ class ApiController extends \BaseController
 
 
     public function pocResults($patient_id)
-        {
+    {
 
-            $results = DB::table('poc_results AS pr')
-                ->where('patient_id', '=', $patient_id)
-                ->select('pr.id AS pocresultId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
-                    'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
-                    'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
-                    'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
-                ->orderBy('pr.id', 'asc')
-                ->get();
+        $results = DB::table('poc_results AS pr')
+            ->where('patient_id', '=', $patient_id)
+            ->select('pr.id AS pocResultsId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
+                'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
+                'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
+                'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
+            ->orderBy('pr.id', 'asc')
+            ->get();
 
-            return $results;
+        return $results;
 
-        }
+    }
 
 
         public function pocTable()
         {
             $results = DB::table('poc_tables AS pt')
-                ->select('id AS poc_id', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
+                ->select('id AS pocId', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
                     'provisional_diagnosis AS provisionalDiagnosis', 'caretaker_number AS caretakerNumber', 'entry_point AS entryPoint', 'mother_name AS motherName',
                     'infant_name AS infantName', 'breastfeeding_status AS breastfeedingStatus', 'mother_hiv_status AS motherHivStatus', 'collection_date AS collectionDate',
                     'pcr_level AS pcrLevel', 'created_by AS createdBy', 'pmtct_antenatal AS pmtctAntenatal', 'pmtct_delivery AS pmtctDelivery', 'pmtct_postnatal AS pmtctPostnatal',
@@ -426,7 +424,7 @@ class ApiController extends \BaseController
         public function clinicians()
         {
             $results = DB::table('clinicians AS c')
-                        ->select('c.id AS clinicians_id', 'c.name AS name', 'c.cadre AS cadre',
+                        ->select('c.id AS cliniciansId', 'c.name AS name', 'c.cadre AS cadre',
                                 'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
                                 'c.active AS active','c.updated_at AS updatedAt')
                         ->orderBy('c.id', 'asc')

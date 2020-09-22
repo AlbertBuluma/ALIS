@@ -426,7 +426,7 @@ class ApiController extends \BaseController
         public function clinicians()
         {
             $results = DB::table('clinicians AS c')
-                        ->select('c.id AS clinicians_id', 'c.name AS name', 'c.cadre AS cadre',
+                        ->select('c.id AS cliniciansId', 'c.name AS name', 'c.cadre AS cadre',
                                 'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
                                 'c.active AS active','c.updated_at AS updatedAt')
                         ->orderBy('c.id', 'asc')

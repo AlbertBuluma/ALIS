@@ -355,9 +355,9 @@ class ApiController extends \BaseController
                 'mp.updated_at AS microPatientsDetailsUpdatedAt',
                 'ud.id AS unhlsDistrictsId', 'ud.name AS unhlsDistrictsName', 'ud.created_at AS unhlsDistrictsCreatedAt',
                 'ud.updated_at AS unhlsDistrictsUpdatedAt',
-                'uv.id AS unhlsVisitsid', 'uv.patient_id AS unhlsVisitspatientId', 'uv.visit_type AS visitType',
+                'uv.id AS unhlsVisitsId', 'uv.patient_id AS unhlsVisitsPatientId', 'uv.visit_type AS visitType',
                 'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
-                'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitscreatedAt',
+                'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitsCreatedAt',
                 'uv.updated_at AS unhlsVisitsUpdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
                 'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
                 'uv.on_antibiotics AS onAntibiotics',
@@ -544,7 +544,7 @@ class ApiController extends \BaseController
                 $visit['specimentestList'] = [];
 
                 $visit_tests = [];
-                $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsid'])), true);
+                $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsId'])), true);
 
                 $visit['specimentestList'] = $visit_tests;
 
@@ -661,8 +661,8 @@ class ApiController extends \BaseController
             $poc_visits = [];
             $poc_results = [];
             foreach ($all_visits['poc'] as $poc) {
-                $poc['poc_results'] = [];
-                $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['poc_id'])), true);
+                $poc['pocresultList'] = [];
+                $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
 
                 $poc_results[] = $poc;
 

@@ -21,6 +21,9 @@
                 </div>
             @elseif (Session::has('message'))
                 <div class="alert alert-danger">{{ Session::get('message') }}</div>
+            @elseif(Session::has('info'))
+{{--                <div class="alert alert-success">Connection Established</div>--}}
+                <div class="alert alert-success">{{ Session::get('info') }}</div>
             @endif
         </div>
 
@@ -48,6 +51,34 @@
                 )) }}
             </div>
         </div>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-lock"></span>
+                {{ Form::text("host_ip", Input::old("host_ip"), array(
+                    "placeholder" => trans('messages.host_ip'),
+                    "class" => "form-control"
+                )) }}
+
+                {{ Form::text("host_ip_port_number", Input::old("host_ip_port_number"), array(
+                    "placeholder" => trans('messages.host_ip_port_number'),
+                    "class" => "form-control"
+                )) }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon glyphicon glyphicon-lock"></span>
+                {{ Form::text("main_ip", Input::old("main_ip"), array(
+                    "placeholder" => trans('messages.main_ip'),
+                    "class" => "form-control"
+                )) }}
+
+                {{ Form::text("main_ip_port_number", Input::old("main_ip_port_number"), array(
+                    "placeholder" => trans('messages.main_ip_port_number'),
+                    "class" => "form-control"
+                )) }}
+            </div>
+        </div>
 {{--        <div class="form-group">--}}
 {{--            <div class="input-group">--}}
 {{--                <span class="input-group-addon glyphicon glyphicon-info-sign"></span>--}}
@@ -58,11 +89,20 @@
 {{--            </div>--}}
 {{--        </div>--}}
         <div class="form-group">
-            <div>
+            <div class="row">
                 {{ Form::button(trans('messages.facility_settings'), array(
                     "type" => "submit",
                     "class" => "btn btn-primary btn-block"
                 )) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <button class="btn btn-success btn-block">
+{{--                    <a href="{{ action('UserController@testConnection') }}">Test connection</a>--}}
+                    <a href="{{ route('facility.connection') }}">Test connection</a>
+                </button>
             </div>
         </div>
         {{ Form::close() }}
